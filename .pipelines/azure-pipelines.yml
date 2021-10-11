@@ -10,13 +10,9 @@ pool:
 
 stages:
 
-- stage: Test
-  script: |
-    echo $(Build.Reason)
-
 - stage: PR_Build
   displayName: PR Build
-  condition: in(variables['Build.Reason'], 'PullRequest', 'Schedule')
+  #condition: in(variables['Build.Reason'], 'PullRequest', 'Schedule')
   pool:
     vmImage: 'windows-latest'
   jobs:
