@@ -7,9 +7,6 @@ steps:
   - checkout: self
     submodules: recursive
 
-  - script: |
-      echo $(Build.Reason)
-
   - task: UseDotNet@2
     displayName: 'Use .NET Core 5.0 (latest)'
     inputs:
