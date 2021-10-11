@@ -10,6 +10,10 @@ pool:
 
 stages:
 
+- stage: Test
+  script: |
+    echo $(Build.Reason)
+
 - stage: PR_Build
   displayName: PR Build
   condition: in(variables['Build.Reason'], 'PullRequest', 'Schedule')
@@ -25,7 +29,7 @@ stages:
 
 - stage: CI_Build
   displayName: CI Build
-  condition: in(variables['Build.Reason'], 'Manual', 'IndividualCI', 'BatchedCI', 'ResourceTrigger')
+  condition: in(variables['Build.Reason'], 'Manual', 'IndividualCI', 'BatchedCI')
   jobs:
     - job: CI_Build
       displayName: CI Build
