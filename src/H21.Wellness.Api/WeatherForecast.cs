@@ -1,6 +1,6 @@
 using System;
 
-namespace H21.Wellness
+namespace H21.Wellness.Api
 {
     public class WeatherForecast
     {
