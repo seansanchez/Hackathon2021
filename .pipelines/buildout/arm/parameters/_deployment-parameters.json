@@ -3,19 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "ResourceName": {
-      "value": "askability-@@Environment@@"
-    },
-    "BotAadAppId": {
-      "value": "@@BotAadAppId@@"
-    },
-    "BotRegistrationName": {
-      "value": "@@BotRegistrationName@@"
-    },
-    "BotDisplayName": {
-      "value": "@@BotDisplayName@@"
-    },
-    "BotDescription": {
-      "value": "@@BotDescription@@"
+      "value": "h21wellness-@@Environment@@"
     },
     "Environment": {
       "value": "@@Environment@@"
