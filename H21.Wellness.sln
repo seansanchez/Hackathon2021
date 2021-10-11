@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H21.Wellness", "src\H21.Wellness\H21.Wellness.csproj", "{FB8A56C1-CC73-42FA-8B2C-CEBB1BC3A985}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H21.Wellness.Tests", "test\H21.Wellness.Tests\H21.Wellness.Tests.csproj", "{80C73E17-4109-4D18-8E18-3FD66FEDA1DD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A474EA9D-E866-4D49-9495-87C257BB6F13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{FB8A56C1-CC73-42FA-8B2C-CEBB1BC3A985}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB8A56C1-CC73-42FA-8B2C-CEBB1BC3A985}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB8A56C1-CC73-42FA-8B2C-CEBB1BC3A985}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80C73E17-4109-4D18-8E18-3FD66FEDA1DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80C73E17-4109-4D18-8E18-3FD66FEDA1DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80C73E17-4109-4D18-8E18-3FD66FEDA1DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80C73E17-4109-4D18-8E18-3FD66FEDA1DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{80C73E17-4109-4D18-8E18-3FD66FEDA1DD} = {A474EA9D-E866-4D49-9495-87C257BB6F13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF5C5D0E-6452-4731-9DA1-565A3E8AB71F}
