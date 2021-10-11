@@ -9,9 +9,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-- stage: Test
-  - script: |
-      echo ${{ Build.Reason }}
 
 - stage: PR_Build
   displayName: PR Build
@@ -28,7 +25,7 @@ stages:
 
 - stage: CI_Build
   displayName: CI Build
-  condition: in(variables['Build.Reason'], 'Manual', 'IndividualCI', 'BatchedCI')
+  condition: in(variables['Build.Reason'], 'Manual', 'IndividualCI', 'BatchedCI', 'ResourceTrigger')
   jobs:
     - job: CI_Build
       displayName: CI Build
