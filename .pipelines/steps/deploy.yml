@@ -1,0 +1,40 @@
+parameters:
+  - name: armDeploymentSubscription
+    type: string
+  - name: armDeploymentResourceGroup
+    type: string
+  - name: armDeploymentLocation
+    type: string
+  - name: configurationName
+    type: string
+  - name: apiAppName
+    type: string
+
+steps:
+
+  - download: current
+    displayName: 'Download - Buildout Artifacts'
+    artifact: 'buildout'
+
+  - download: current
+    displayName: 'Download - WebApp'
+    artifact: 'drop'
+
+  - task: AzureResourceGroupDeployment@2
+    displayName: 'ARM Template Deployment'
+    inputs:
+      azureSubscription: '${{ parameters.armDeploymentSubscription }}'
+      resourceGroupName: '${{ parameters.armDeploymentResourceGroup }}'
+      location: '${{ parameters.armDeploymentLocation }}'
+      csmFile: '$(Pipeline.Workspace)/buildout/arm/templates/deployment-template.json'
+      csmParametersFile: '$(Pipeline.Workspace)/buildout/arm/parameters/${{ parameters.configurationName }}._deployment-parameters.json'
+      deploymentMode: 'Incremental'
+      deploymentOutputs: 'ArmOutput'
+
+  - task: AzureWebApp@1
+    displayName: Azure WebApp Deployment
+    inputs:
+      azureSubscription: '${{ parameters.armDeploymentSubscription }}'
+      resourceGroupName: '${{ parameters.armDeploymentResourceGroup }}'
+      appName: '${{ parameters.apiAppName }}'
+      package: $(Pipeline.Workspace)/drop/H21.Wellness.Api.zip
