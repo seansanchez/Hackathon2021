@@ -9,6 +9,9 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
+- stage: Test
+  - script: |
+      echo ${{ Build.Reason }}
 
 - stage: PR_Build
   displayName: PR Build
