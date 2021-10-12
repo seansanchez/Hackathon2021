@@ -1,0 +1,51 @@
+@import 'office-ui-fabric-core/dist/sass/References';
+
+$primary-color: #036666;
+$primary-color-2: #14746f;
+$primary-color-3: #248277;
+$primary-color-4: #358f80;
+$primary-color-5: #469d89;
+$primary-color-6: #99e2b4;
+
+
+$text-color: #605e5c;
+
+
+$container-radius: 8px;
+$action-radius: 4px;
+
+button {
+    border-radius: $action-radius;
+    height: 4rem;
+    background-color: white;
+    border: none;
+    border-color: $text-color;
+    color: $text-color;
+    padding: 0 1rem;
+    cursor: pointer;
+    font-size: 2rem;
+
+    &.bordered {
+        border: 2px solid;
+    }
+
+    &:hover,
+    &:focus {
+        box-shadow: $ms-depth-shadow-8;
+    }
+
+    &:active {
+        box-shadow: $ms-depth-shadow-4;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Segoe UI';
+}

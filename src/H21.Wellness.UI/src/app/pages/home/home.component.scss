@@ -1,0 +1,23 @@
+@import 'src/styles.scss';
+
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-around;
+
+    button {
+        margin-bottom: 1rem;
+        width: 100%;
+        max-width: 20rem;
+        color: $primary-color;
+    
+        &.play {
+            border-color: $primary-color-2;
+        }
+    
+        &.create {
+            border-color: $primary-color-2;
+        }
+    }
+}

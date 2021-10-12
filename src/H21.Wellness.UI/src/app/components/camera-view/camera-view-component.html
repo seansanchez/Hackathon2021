@@ -1,0 +1,16 @@
+<div class="video-container">
+    <video #video autoplay></video>
+    <canvas #canvas></canvas>
+
+    <button class="playButton" (click)="startPlaying();" [disabled]="isLoading" *ngIf="!startedStreaming">Start</button>
+
+    <div class="button-bar">
+        <button class="captureButton" (click)="captureScreenshot()" *ngIf="isStreaming">
+            <i class="ms-Icon ms-Icon--Camera" aria-hidden="true"></i>
+        </button>
+        <button class="flipButton" (click)="switchCameras()" [disabled]="isLoading || !isStreaming"
+            *ngIf="canSwitchCameras">
+            <i class="ms-Icon ms-Icon--Sync" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>
