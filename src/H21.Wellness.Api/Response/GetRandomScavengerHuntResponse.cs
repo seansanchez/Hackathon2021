@@ -2,7 +2,7 @@
 
 namespace H21.Wellness.Api.Response
 {
-    public class GetScavengerHuntResponse : ScavengerHuntModel
+    public class GetRandomScavengerHuntResponse : ScavengerHuntModel
     {
     }
 }
