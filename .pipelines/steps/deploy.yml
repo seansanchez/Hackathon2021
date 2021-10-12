@@ -34,7 +34,7 @@ steps:
       deploymentOutputs: 'ArmOutput'
 
   - task: AzureWebApp@1
-    displayName: Azure WebApp Deployment
+    displayName: Deploy WebApp - API
     inputs:
       azureSubscription: '${{ parameters.armDeploymentSubscription }}'
       resourceGroupName: '${{ parameters.armDeploymentResourceGroup }}'
@@ -42,7 +42,7 @@ steps:
       package: $(Pipeline.Workspace)/drop/H21.Wellness.Api.zip
 
   - task: AzureWebApp@1
-    displayName: Azure WebApp Deployment
+    displayName: Deploy WebApp - UI
     inputs:
       azureSubscription: '${{ parameters.armDeploymentSubscription }}'
       resourceGroupName: '${{ parameters.armDeploymentResourceGroup }}'

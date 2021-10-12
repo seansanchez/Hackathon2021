@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "ResourceName": {
+    "AppName": {
       "type": "string"
     },
     "Environment": {
@@ -13,16 +13,17 @@
     }
   },
   "variables": {
-    "ResourceNameWithoutHyphens": "[replace(parameters('ResourceName'), '-', '')]",
+    "ResourceName": "[concat(parameters('AppName'), '-', parameters('Environment'))]",
+    "ResourceNameWithoutHyphens": "[replace(variables('ResourceName'), '-', '')]",
     "AadDeveloperObjectId": "affe60f0-8fb4-47b8-b5aa-c2cad5683813",
-    "ApiAppName": "[concat(parameters('ResourceName'), '-api')]",
-    "UIAppName": "[concat(parameters('ResourceName'), '-ui')]"
+    "ApiAppName": "[concat(parameters('AppName'), '-api-', parameters('Environment'))]",
+    "UIAppName": "[concat(parameters('AppName'), '-ui-', parameters('Environment'))]"
   },
   "resources": [
     {
       "type": "Microsoft.CognitiveServices/accounts",
       "apiVersion": "2021-04-30",
-      "name": "[parameters('ResourceName')]",
+      "name": "[variables('ResourceName')]",
       "location": "[resourceGroup().location]",
       "sku": {
         "name": "S1"
@@ -33,7 +34,7 @@
         "userAssignedIdentities": {}
       },
       "properties": {
-        "customSubDomainName": "[parameters('ResourceName')]",
+        "customSubDomainName": "[variables('ResourceName')]",
         "networkAcls": {
           "defaultAction": "Allow",
           "virtualNetworkRules": [],
@@ -45,7 +46,7 @@
     {
       "type": "microsoft.operationalinsights/workspaces",
       "apiVersion": "2020-10-01",
-      "name": "[parameters('ResourceName')]",
+      "name": "[variables('ResourceName')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "sku": {
@@ -62,10 +63,10 @@
     {
       "type": "microsoft.insights/components",
       "apiVersion": "2020-02-02-preview",
-      "name": "[parameters('ResourceName')]",
+      "name": "[variables('ResourceName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('microsoft.operationalinsights/workspaces', parameters('ResourceName'))]"
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('ResourceName'))]"
       ],
       "kind": "web",
       "properties": {
@@ -73,7 +74,7 @@
         "RetentionInDays": 90,
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled",
-        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', parameters('ResourceName'))]"
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('ResourceName'))]"
       }
     },
     {
@@ -114,7 +115,7 @@
     {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2018-02-01",
-      "name": "[parameters('ResourceName')]",
+      "name": "[variables('ResourceName')]",
       "location": "[resourceGroup().location]",
       "sku": {
         "name": "B1",
@@ -134,7 +135,7 @@
       "name": "[variables('UIAppName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('ResourceName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', variables('ResourceName'))]"
       ],
       "kind": "app,linux",
       "identity": {
@@ -143,7 +144,7 @@
       "properties": {
         "enabled": true,
         "httpsOnly": true,
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('ResourceName'))]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('ResourceName'))]"
       }
     },
     {
@@ -151,9 +152,9 @@
       "apiVersion": "2018-11-01",
       "name": "[concat(variables('UIAppName'), '/web')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Insights/components', parameters('ResourceName'))]",
+        "[resourceId('Microsoft.Insights/components', variables('ResourceName'))]",
         "[resourceId('Microsoft.Web/sites', variables('UIAppName'))]",
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('ResourceName'))]"
       ],
       "properties": {
         "linuxFxVersion": "NODE|14-lts",
@@ -166,7 +167,7 @@
       "name": "[variables('ApiAppName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('ResourceName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', variables('ResourceName'))]"
       ],
       "kind": "app,linux",
       "identity": {
@@ -175,7 +176,7 @@
       "properties": {
         "enabled": true,
         "httpsOnly": true,
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('ResourceName'))]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('ResourceName'))]"
       }
     },
     {
@@ -183,9 +184,9 @@
       "apiVersion": "2018-11-01",
       "name": "[concat(variables('ApiAppName'), '/web')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Insights/components', parameters('ResourceName'))]",
+        "[resourceId('Microsoft.Insights/components', variables('ResourceName'))]",
         "[resourceId('Microsoft.Web/sites', variables('ApiAppName'))]",
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('ResourceName'))]"
       ],
       "properties": {
         "linuxFxVersion": "DOTNETCORE|5.0",
@@ -199,23 +200,23 @@
       "apiVersion": "2018-11-01",
       "name": "[concat(variables('ApiAppName'), '/appsettings')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Insights/components', parameters('ResourceName'))]",
+        "[resourceId('Microsoft.Insights/components', variables('ResourceName'))]",
         "[resourceId('Microsoft.Web/sites', variables('ApiAppName'))]",
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('ResourceName'))]"
       ],
       "properties": {
-        "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('ResourceName')), '2015-05-01').InstrumentationKey]",
-        "APPLICATIONINSIGHTS_CONNECTION_STRING": "[reference(resourceId('Microsoft.Insights/components', parameters('ResourceName')), '2015-05-01').ConnectionString]",
-        "KeyVaultUri": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName')), '2018-02-14').vaultUri]"
+        "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', variables('ResourceName')), '2015-05-01').InstrumentationKey]",
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "[reference(resourceId('Microsoft.Insights/components', variables('ResourceName')), '2015-05-01').ConnectionString]",
+        "KeyVaultUri": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('ResourceName')), '2018-02-14').vaultUri]"
       }
     },
     {
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2016-10-01",
-      "name": "[parameters('ResourceName')]",
+      "name": "[variables('ResourceName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('ResourceName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('ResourceName'))]",
         "[resourceId('Microsoft.Web/sites', variables('ApiAppName'))]"
       ],
       "properties": {
@@ -248,9 +249,9 @@
       "condition": "[bool(parameters('DeveloperAccessPolicyEnabled'))]",
       "type": "Microsoft.KeyVault/vaults/accessPolicies",
       "apiVersion": "2016-10-01",
-      "name": "[concat(parameters('ResourceName'), '/add')]",
+      "name": "[concat(variables('ResourceName'), '/add')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('ResourceName'))]"
       ],
       "properties": {
         "accessPolicies": [
@@ -274,10 +275,10 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(parameters('ResourceName'), '/AzureStorageOptions--ConnectionString')]",
+      "name": "[concat(variables('ResourceName'), '/AzureStorageOptions--ConnectionString')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName'))]",
+        "[resourceId('Microsoft.KeyVault/vaults', variables('ResourceName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('ResourceNameWithoutHyphens'))]"
       ],
       "properties": {
@@ -290,14 +291,14 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(parameters('ResourceName'), '/CustomVisionOptions--ApiKey')]",
+      "name": "[concat(variables('ResourceName'), '/CustomVisionOptions--ApiKey')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName'))]",
-        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('ResourceName'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('ResourceName'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts', variables('ResourceName'))]"
       ],
       "properties": {
-        "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('ResourceName')),'2021-04-30').key1]",
+        "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('ResourceName')),'2021-04-30').key1]",
         "attributes": {
           "enabled": true
         }
