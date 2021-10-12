@@ -3,8 +3,6 @@
     <canvas #canvas></canvas>
 
     <loading-indicator *ngIf="isLoading"></loading-indicator>
-    <button class="playButton" (click)="startPlaying();" *ngIf="!isLoading && !startedStreaming"
-        [@popFadeInState]="'active'">Start</button>
 
     <div class="button-bar">
         <button class="captureButton" (click)="captureScreenshot()" *ngIf="startedStreaming"

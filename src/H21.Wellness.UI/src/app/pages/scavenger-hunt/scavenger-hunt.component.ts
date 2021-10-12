@@ -1,13 +1,16 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Subject, timer } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, of, Subject, timer } from 'rxjs';
+import { catchError, skip, takeUntil } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
-import { IPrey } from 'src/app/components/prey-list/IPrey';
+import { IPrey } from 'src/app/models/IPrey';
 import { PopFadeInAnimation } from 'src/app/animations/popFadeIn.animation';
 import { PreyListComponent } from 'src/app/components/prey-list/prey-list.component';
 import { CameraViewComponent } from 'src/app/components/camera-view/camera-view.component';
-import { CanDeactivate } from '@angular/router';
+import { DialogService } from 'src/app/services/dialog.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
+import { ApiService } from 'src/app/services/api.service';
 
 @Component({
     templateUrl: './scavenger-hunt.component.html',
@@ -15,15 +18,7 @@ import { CanDeactivate } from '@angular/router';
     animations: [PopFadeInAnimation]
 })
 export class ScavengerHuntComponent implements OnInit, OnDestroy {
-    public items: IPrey[] = [
-        { name: 'Dog', complete: false },
-        { name: 'Mailbox', complete: false },
-        { name: 'Tree', complete: false },
-        { name: 'Car', complete: false },
-        { name: 'House', complete: false },
-        { name: 'Bird', complete: false },
-        { name: 'Flower', complete: false }
-    ];
+    public items: IPrey[] = [];
 
     private _gameInProgress = false;
     private _gameOverTime: dayjs.Dayjs = dayjs();
@@ -36,27 +31,78 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     private _errorSharing: boolean = false;
     private _currItem!: IPrey;
     private _processing: boolean = false;
+    private _gameCode: string = '';
+    private _gameName: string = '';
+    private _gameLoading: boolean = true;
 
     @ViewChild('cameraView', { read: CameraViewComponent }) private cameraView!: CameraViewComponent;
     @ViewChild('preyList', { read: PreyListComponent }) private preyList!: PreyListComponent;
 
+    constructor(
+        private readonly activatedRoute: ActivatedRoute,
+        private readonly apiService: ApiService,
+        private readonly dialogService: DialogService,
+        private readonly router: Router) { }
+
     /** Initialization lifecycle hook. */
     public ngOnInit(): void {
+        this.activatedRoute.queryParamMap
+            .pipe(
+                takeUntil(this._ngDestroy)
+            ).subscribe(params => {
+                const gameCode = params.get("game");
+                if (gameCode) {
+                    this._gameCode = gameCode;
+                    this.router.navigate(['/scavenger-hunt'], { queryParams: {}, replaceUrl: true });
+                } else {
+                    this.getGame();
+                }
+            });
     }
+
     /** Destroy lifecycle hook. */
     public ngOnDestroy(): void {
         this._ngDestroy.next();
     }
 
-    public canDeactivate(): boolean {
-        return this._gameInProgress ? false : true;
+    public canDeactivate(): Observable<boolean> | boolean {
+        if (this._gameInProgress) {
+            return this.dialogService.displayConfirmationDialog('Are you sure you want to leave this page? <br>All game progress will be lost.', 'Game in Progress');
+        } else {
+            return true;
+        }
+    }
+
+    public getGame(): void {
+        this._gameLoading = true;
+        this.apiService.getScavengerHunt(this._gameCode)
+            .pipe(
+                catchError(() => {
+                    this.dialogService.displayConfirmationDialog('We can\'t find that scavenger hunt game. Try a different code.', 'Oops!', 'Try Again').subscribe(() => {
+                        this.router.navigate(['/']);
+                    });
+                    return of(null);
+                })
+            )
+            .subscribe(res => {
+                if (res) {
+                    this._gameName = res.scavengerHunt.name;
+                    this._gameCode = res.scavengerHunt.id;
+                    this.items = res.scavengerHunt.items.map(i => <IPrey>{
+                        name: i.name,
+                        complete: false
+                    });
+                    this._gameLoading = false;
+                }
+            });
     }
 
     public startGame(): void {
         this._ngDestroy.next();
 
-        this._gameInProgress = true;
+        this.cameraView.startCameraStream();
 
+        this._gameInProgress = true;
         this._gameOverTime = dayjs().add(20, 'minutes');
         timer(500, 1000).pipe(
             takeUntil(this._ngDestroy)
@@ -67,6 +113,16 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                 this.gameOver();
             }
         });
+    }
+
+    /** Gets the name of the scavenger hunt. */
+    public get gameName(): string {
+        return this._gameName;
+    }
+
+    /** Whether the game is loading or not. */
+    public get gameLoading(): boolean {
+        return this._gameLoading;
     }
 
     /** Gets the time remaining in MM:SS timestamp for display. */
@@ -126,7 +182,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
         this._gameComplete = true;
 
         const minutesRemaining = Math.floor(this._secondsRemaining / 60);
-        const bonusScore = Math.floor(minutesRemaining / 2) * 5;
+        const bonusScore = Math.floor(minutesRemaining % 2) * 5;
         this._finalScore = (this.numItemsComplete * 10) + bonusScore;
     }
 
@@ -142,16 +198,17 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                     navigator.share(<ShareData>{
                         files: filesArray,
                         title: 'Breath of Fresh Where?',
-                        text: 'Check out my scavenger hunt score!',
+                        text: `Check out my scavenger hunt score! Play this hunt and see if you can do better:`,
+                        url: `${environment.uiUrl}/scavenger-hunt?game=${this._gameCode}`
                     })
                         .then(() => this._sharing = false)
                         .catch(() => {
-                            this._errorSharing = true; 
+                            this._errorSharing = true;
                             this._sharing = false;
                         })
                 })
                 .catch(() => {
-                    this._errorSharing = true; 
+                    this._errorSharing = true;
                     this._sharing = false;
                 });
         }

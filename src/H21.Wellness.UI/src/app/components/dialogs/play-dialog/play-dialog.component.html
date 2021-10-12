@@ -1,0 +1,18 @@
+<div class="backdrop" (click)="preventClose ? null : close()"></div>
+<div class="dialog" aria-label="Confirmation Dialog" *ngIf="shouldShowDialog()" [@popFadeInState]="'active'"
+    role="dialog" aria-modal="true" aria-haspopup="dialog" aria-hidden="false" aria-describedby="dialogBody" cdkTrapFocus>
+    <h1>New Scavenger Hunt</h1>
+    <div class="input-wrapper">
+        <input #codeInput class="code-input" [(ngModel)]="gameCode" />
+        <span class="placeholder" *ngIf="!hasCode">Game code (optional):</span>
+        <button class="clear" *ngIf="hasCode" (click)="clearCode(codeInput)">
+            <i class="ms-Icon ms-Icon--ChromeClose" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="action-bar">
+        <button class="primary" (click)="playGame()" [attr.aria-label]="hasCode ? 'Play this game' : 'Play random'"
+            [disabled]="hasCode && !gameCodeValid">
+            {{ hasCode ? 'Play this game' : 'Play random game' }}
+        </button>
+    </div>
+</div>

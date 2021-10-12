@@ -10,7 +10,6 @@ import { PopFadeInAnimation } from 'src/app/animations/popFadeIn.animation';
 })
 export class CameraViewComponent implements OnInit {
 
-    @Output() public gameStart = new EventEmitter();
     @Output() public imageCaptured = new EventEmitter<string>();
     public startedStreaming = false;
 
@@ -77,11 +76,10 @@ export class CameraViewComponent implements OnInit {
         this._processing = processing;
     }
 
-    /** Starts the camera stream and the game. */
-    public startPlaying(): void {
+    /** Starts the camera stream. */
+    public startCameraStream(): void {
         this.camera.viewCameraStream(this.videoPlayer);
         this.startedStreaming = true;
-        this.gameStart.emit();
     }
 
     /** Switch camera directions (front to back). */
