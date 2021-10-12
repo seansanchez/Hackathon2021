@@ -44,12 +44,8 @@ namespace H21.Wellness.Persistence
         /// </summary>
         /// <param name="imageUrl">The URL of the image for which to generate tags.</param>
         /// <returns>Awaitable tagging result.</returns>
-        private async Task<TagResult> GenerateTagsForUrlAsync(string imageUrl)
+        public async Task<TagResult> GenerateTagsForUrlAsync(string imageUrl)
         {
-            // -----------------------------------------------------------------------
-            // KEY SAMPLE CODE STARTS HERE
-            // -----------------------------------------------------------------------
-
             //
             // Create Cognitive Services Vision API Service client.
             //
@@ -59,7 +55,6 @@ namespace H21.Wellness.Persistence
                 TagResult analysisResult = await client.TagImageAsync(imageUrl, "EN");
                 return analysisResult;
             }
-------------------------------------------------------------------
         }
     }
 }
