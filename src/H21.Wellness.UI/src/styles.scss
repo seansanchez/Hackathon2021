@@ -7,23 +7,26 @@ $primary-color-4: #358f80;
 $primary-color-5: #469d89;
 $primary-color-6: #99e2b4;
 
-
 $text-color: #605e5c;
-
 
 $container-radius: 8px;
 $action-radius: 4px;
 
 button {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: $action-radius;
-    height: 4rem;
+    height: 3rem;
     background-color: white;
     border: none;
     border-color: $text-color;
     color: $text-color;
     padding: 0 1rem;
     cursor: pointer;
-    font-size: 2rem;
+    font-size: 1.5rem;
+    -webkit-tap-highlight-color: transparent;
 
     &.bordered {
         border: 2px solid;
@@ -40,7 +43,7 @@ button {
 
     &:disabled {
         opacity: 0.5;
-        cursor: not-allowed;
+        pointer-events: none;
     }
 }
 
@@ -48,4 +51,9 @@ body {
     padding: 0;
     margin: 0;
     font-family: 'Segoe UI';
+    overflow: hidden;
+}
+
+h1 {
+    font-size: 1.5rem;
 }
