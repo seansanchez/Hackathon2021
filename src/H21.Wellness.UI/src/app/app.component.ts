@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'H21WellnessUI';
+
+  constructor(private readonly router: Router) {}
+
+  public goHome(): void {
+    this.router.navigate(['']);
+  }
+
+  public isNotHome(): boolean {
+    return this.router.url !== '/';
+  }
 }
