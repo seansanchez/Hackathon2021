@@ -33,7 +33,7 @@ export class PreyListComponent implements OnInit {
 
     /** Completes the item and selects the next item in the list. */
     public completeItem(item: IPrey) {
-        const matchingItem = this.items.find(i => i.name === i.name);
+        const matchingItem = this.items.find(i => i.name === item.name);
         if (matchingItem) {
             matchingItem.complete = true;
         }
