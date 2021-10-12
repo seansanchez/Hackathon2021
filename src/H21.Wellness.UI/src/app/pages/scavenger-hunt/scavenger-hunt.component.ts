@@ -31,7 +31,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     private _errorSharing: boolean = false;
     private _currItem!: IPrey;
     private _processing: boolean = false;
-    private _gameCode: string = '';
+    private _gameCode!: string;
     private _gameName: string = '';
     private _gameLoading: boolean = true;
 
@@ -84,11 +84,11 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                     return of(null);
                 })
             )
-            .subscribe(res => {
-                if (res) {
-                    this._gameName = res.scavengerHunt.name;
-                    this._gameCode = res.scavengerHunt.id;
-                    this.items = res.scavengerHunt.items.map(i => <IPrey>{
+            .subscribe(scavengerHunt => {
+                if (scavengerHunt) {
+                    this._gameName = scavengerHunt.name;
+                    this._gameCode = scavengerHunt.id;
+                    this.items = scavengerHunt.items.map(i => <IPrey>{
                         name: i.name,
                         complete: false
                     });
@@ -178,12 +178,15 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     /** Process game over. */
     public gameOver(): void {
         this._ngDestroy.next();
-        this._gameInProgress = false;
-        this._gameComplete = true;
 
-        const minutesRemaining = Math.floor(this._secondsRemaining / 60);
-        const bonusScore = Math.floor(minutesRemaining % 2) * 5;
-        this._finalScore = (this.numItemsComplete * 10) + bonusScore;
+        this.apiService.getScore(this.numItemsComplete).subscribe(res => {
+            if (res) {
+                this._gameInProgress = false;
+                this._gameComplete = true;
+
+                this._finalScore = res.score;
+            }
+        });
     }
 
     /** Shares the score through the browser share feature. */
