@@ -11,6 +11,8 @@ namespace H21.Wellness.Api
 {
     public class Startup
     {
+        private const string CorsPolicyName = "CorsPolicy";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,6 +33,14 @@ namespace H21.Wellness.Api
                 .AddHealthChecks()
                 .AddCheck<AzureTableStorageHealthCheck>(nameof(AzureTableStorageHealthCheck));
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    CorsPolicyName,
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -50,6 +60,8 @@ namespace H21.Wellness.Api
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "H21.Wellness v1"));
 
             app.UseHttpsRedirection();
+
+            app.UseCors(CorsPolicyName);
 
             app.UseRouting();
 
