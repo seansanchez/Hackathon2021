@@ -14,7 +14,9 @@
   },
   "variables": {
     "ResourceNameWithoutHyphens": "[replace(parameters('ResourceName'), '-', '')]",
-    "AadDeveloperObjectId": "affe60f0-8fb4-47b8-b5aa-c2cad5683813"
+    "AadDeveloperObjectId": "affe60f0-8fb4-47b8-b5aa-c2cad5683813",
+    "ApiAppName": "[concat(parameters('ResourceName'), '-api')]",
+    "UIAppName": "[concat(parameters('ResourceName'), '-ui')]"
   },
   "resources": [
     {
@@ -129,7 +131,7 @@
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2018-11-01",
-      "name": "[parameters('ResourceName')]",
+      "name": "[variables('UIAppName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('ResourceName'))]"
@@ -147,25 +149,42 @@
     {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2018-11-01",
-      "name": "[concat(parameters('ResourceName'), '/appsettings')]",
+      "name": "[concat(variables('UIAppName'), '/web')]",
       "dependsOn": [
         "[resourceId('Microsoft.Insights/components', parameters('ResourceName'))]",
-        "[resourceId('Microsoft.Web/sites', parameters('ResourceName'))]",
+        "[resourceId('Microsoft.Web/sites', variables('UIAppName'))]",
         "[resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName'))]"
       ],
       "properties": {
-        "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('ResourceName')), '2015-05-01').InstrumentationKey]",
-        "APPLICATIONINSIGHTS_CONNECTION_STRING": "[reference(resourceId('Microsoft.Insights/components', parameters('ResourceName')), '2015-05-01').ConnectionString]",
-        "KeyVaultUri": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName')), '2018-02-14').vaultUri]"
+        "linuxFxVersion": "NODE|14-lts",
+        "alwaysOn": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2018-11-01",
+      "name": "[variables('ApiAppName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('ResourceName'))]"
+      ],
+      "kind": "app,linux",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "enabled": true,
+        "httpsOnly": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('ResourceName'))]"
       }
     },
     {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2018-11-01",
-      "name": "[concat(parameters('ResourceName'), '/web')]",
+      "name": "[concat(variables('ApiAppName'), '/web')]",
       "dependsOn": [
         "[resourceId('Microsoft.Insights/components', parameters('ResourceName'))]",
-        "[resourceId('Microsoft.Web/sites', parameters('ResourceName'))]",
+        "[resourceId('Microsoft.Web/sites', variables('ApiAppName'))]",
         "[resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName'))]"
       ],
       "properties": {
@@ -173,6 +192,21 @@
         "use32BitWorkerProcess": false,
         "webSocketsEnabled": true,
         "alwaysOn": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2018-11-01",
+      "name": "[concat(variables('ApiAppName'), '/appsettings')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', parameters('ResourceName'))]",
+        "[resourceId('Microsoft.Web/sites', variables('ApiAppName'))]",
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName'))]"
+      ],
+      "properties": {
+        "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('ResourceName')), '2015-05-01').InstrumentationKey]",
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "[reference(resourceId('Microsoft.Insights/components', parameters('ResourceName')), '2015-05-01').ConnectionString]",
+        "KeyVaultUri": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName')), '2018-02-14').vaultUri]"
       }
     },
     {
@@ -193,7 +227,7 @@
         "accessPolicies": [
           {
             "tenantId": "[subscription().tenantId]",
-            "objectId": "[reference(resourceId('Microsoft.Web/sites', parameters('ResourceName')), '2019-08-01', 'Full').identity.principalId]",
+            "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('ApiAppName')), '2019-08-01', 'Full').identity.principalId]",
             "permissions": {
               "keys": [],
               "secrets": [
