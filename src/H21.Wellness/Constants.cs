@@ -12,6 +12,8 @@ namespace H21.Wellness
         public static class EnvironmentSettings
         {
             public const string KeyVaultUri = "KeyVaultUri";
+
+            public const string Environment = "ASPNETCORE_ENVIRONMENT";
         }
     }
 }

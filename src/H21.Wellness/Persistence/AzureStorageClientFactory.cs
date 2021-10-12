@@ -2,13 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using H21.Wellness.Extensions;
+using H21.Wellness.Persistence.Interfaces;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
 namespace H21.Wellness.Persistence
 {
-    public class AzureStorageClientFactory
+    public class AzureStorageClientFactory : IAzureStorageClientFactory
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IOptions<AzureStorageOptions> _options;

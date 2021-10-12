@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using Azure.Core;
 using Azure.Identity;
 using H21.Wellness;
 using H21.Wellness.Extensions;
@@ -19,39 +17,42 @@ namespace Fenix.Extensions
         /// </summary>
         /// <param name="source">The source <see cref="IConfigurationBuilder"/>.</param>
         /// <param name="applicationRootPath">The application root path.</param>
-        public static void ConfigureFenix(
+        public static void ConfigureWellness(
             this IConfigurationBuilder source,
             string applicationRootPath = null)
         {
             source.ThrowIfNull(nameof(source));
 
-            var environment = Environment.GetEnvironmentVariable(Constants.EnvironmentSettings.FenixEnvironment);
-
             source.AddEnvironmentVariables();
             source.AddAzureKeyVaultConfigurationProvider();
-            source.AddJsonConfigurationProvider(environment, applicationRootPath);
+            source.AddJsonConfigurationProvider(applicationRootPath);
         }
 
         private static void AddJsonConfigurationProvider(
             this IConfigurationBuilder source,
-            string environment,
             string applicationRootPath = null)
         {
             source.ThrowIfNull(nameof(source));
-            environment.ThrowIfNullOrWhitespace(nameof(environment));
 
             var appSettingsFileName = "appsettings.json";
-            var appSettingsWithEnvironmentFileName = $"appsettings.{environment}.json";
 
             source
                 .AddJsonFile(
                     path: applicationRootPath == null ? appSettingsFileName : Path.Combine(applicationRootPath, appSettingsFileName),
                     optional: true,
-                    reloadOnChange: false)
-                .AddJsonFile(
+                    reloadOnChange: false);
+
+            var environment = Environment.GetEnvironmentVariable(Constants.EnvironmentSettings.Environment);
+
+            if (!string.IsNullOrWhiteSpace(environment))
+            {
+                var appSettingsWithEnvironmentFileName = $"appsettings.{environment}.json";
+
+                source.AddJsonFile(
                     path: applicationRootPath == null ? appSettingsWithEnvironmentFileName : Path.Combine(applicationRootPath, appSettingsWithEnvironmentFileName),
                     optional: true,
                     reloadOnChange: false);
+            }
         }
 
         private static void AddAzureKeyVaultConfigurationProvider(

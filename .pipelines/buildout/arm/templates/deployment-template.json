@@ -14,7 +14,7 @@
   },
   "variables": {
     "ResourceNameWithoutHyphens": "[replace(parameters('ResourceName'), '-', '')]",
-    "AadDeveloperObjectId": "59b1572c-d127-4c2c-a695-19a8a0927a30"
+    "AadDeveloperObjectId": "affe60f0-8fb4-47b8-b5aa-c2cad5683813"
   },
   "resources": [
     {

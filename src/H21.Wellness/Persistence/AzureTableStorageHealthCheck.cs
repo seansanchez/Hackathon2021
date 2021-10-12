@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using H21.Wellness.Extensions;
 using H21.Wellness.Persistence.Interfaces;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
@@ -13,24 +12,18 @@ namespace H21.Wellness.Persistence
     {
         private const string HealthCheckTableName = "healthcheck";
 
-        private readonly IMemoryCache _memoryCache;
         private readonly IAzureStorageClientFactory _azureStorageClientFactory;
         private readonly ILogger<AzureTableStorageHealthCheck> _logger;
-        private readonly SemaphoreSlim _semaphore;
 
         public AzureTableStorageHealthCheck(
-            IMemoryCache memoryCache,
             IAzureStorageClientFactory azureStorageClientFactory,
             ILogger<AzureTableStorageHealthCheck> logger)
         {
-            memoryCache.ThrowIfNull(nameof(memoryCache));
             azureStorageClientFactory.ThrowIfNull(nameof(azureStorageClientFactory));
             logger.ThrowIfNull(nameof(logger));
 
-            _memoryCache = memoryCache;
             _azureStorageClientFactory = azureStorageClientFactory;
             _logger = logger;
-            _semaphore = new SemaphoreSlim(1);
         }
 
         public async Task<HealthCheckResult> CheckHealthAsync(
