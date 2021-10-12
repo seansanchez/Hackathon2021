@@ -3,6 +3,7 @@ using H21.Wellness.Persistence.Interfaces;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Extensions.Options;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace H21.Wellness.Persistence
@@ -53,6 +54,25 @@ namespace H21.Wellness.Persistence
             {
                 
                 TagResult analysisResult = await client.TagImageAsync(imageUrl, "EN");
+                return analysisResult;
+            }
+        }
+
+
+        /// <summary>
+        /// Sends a URL to Cognitive Services and generates tags for it.
+        /// </summary>
+        /// <param name="imageStream">The stream of the image for which to generate tags.</param>
+        /// <returns>Awaitable tagging result.</returns>
+        public async Task<TagResult> GenerateTagsForStreamAsync(Stream imageStream)
+        {
+            //
+            // Create Cognitive Services Vision API Service client.
+            //
+            using (var client = new ComputerVisionClient(Credentials) { Endpoint = Endpoint })
+            {
+
+                TagResult analysisResult = await client.TagImageInStreamAsync(imageStream);
                 return analysisResult;
             }
         }
