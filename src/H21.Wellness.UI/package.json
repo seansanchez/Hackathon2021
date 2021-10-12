@@ -19,6 +19,8 @@
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",
     "camera-web-api": "^1.0.7",
+    "dayjs": "^1.10.7",
+    "html2canvas": "^1.3.2",
     "office-ui-fabric-core": "^11.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
