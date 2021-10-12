@@ -18,6 +18,6 @@ export class ApiService {
 
     /** Gets a Scavenger Hunt with a specified game code */
     public getScavengerHunt(gameCode: string): Observable<IScavengerHunt> {
-        return this.http.get<IScavengerHunt>(`${this._apiUrl}/api/scavenger-hunt/${gameCode}`);
+        return this.http.get<IScavengerHunt>(`${this._apiUrl}/api/scavenger-hunt/game/${gameCode ? gameCode : 'random'}`);
     }
 }
