@@ -216,7 +216,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('ResourceName'))]",
-        "[resourceId('Microsoft.Web/sites', parameters('ResourceName'))]"
+        "[resourceId('Microsoft.Web/sites', variables('ApiAppName'))]"
       ],
       "properties": {
         "sku": {
