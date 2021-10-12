@@ -1,0 +1,19 @@
+@import "src/styles.scss";
+
+.loading-container {
+    pointer-events: none;
+
+    i {
+        animation: rotation 2s linear infinite;
+    }
+
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}
