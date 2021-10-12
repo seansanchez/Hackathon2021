@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { IPrey } from "./IPrey";
+import { IPrey } from "../../models/IPrey";
 
 @Component({
     selector: 'prey-list',

@@ -2,13 +2,17 @@
     [class.disabled]="imageProcessing"></camera-view>
 <prey-list #preyList [items]="items" (listComplete)="gameOver()" (itemSelected)="itemSelected($event)"
     *ngIf="gameInProgress && !gameComplete" [class.disabled]="imageProcessing"></prey-list>
-<div class="time-stamp" *ngIf="gameInProgress">
+
+<button class="playButton" (click)="startGame();" *ngIf="!gameLoading && !gameInProgress"
+    [@popFadeInState]="'active'">Start</button>
+
+<div class="time-stamp">
     {{ timeRemaining }}
 </div>
 
 <div #scoreContainer class="game-over-container" *ngIf="gameComplete" [@popFadeInState]="'active'">
     <span class="title">Breath of Fresh Where?</span>
-    <span class="subtitle">Scavenger Hunt Complete!</span>
+    <span class="subtitle">{{gameName}}<br>Scavenger Hunt Complete!</span>
     <span class="score-descriptor">
         <b>Items found:</b> {{ numItemsComplete }} out of {{ items.length }}
     </span>

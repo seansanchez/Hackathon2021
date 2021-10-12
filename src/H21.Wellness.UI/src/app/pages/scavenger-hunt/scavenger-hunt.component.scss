@@ -11,8 +11,23 @@ prey-list.disabled {
     right: 0;
     font-size: 1.5rem;
     color: white;
-    padding: 0.25rem;
+    padding: 1rem;
     background-color: rgba(0, 0, 0, 0.5);
+}
+
+.playButton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    height: 5rem;
+    width: 10rem;
+    font-size: 2rem;
+    font-weight: 600;
+    border-radius: $action-radius;
+    color: $primary-color;
 }
 
 .game-over-container {
