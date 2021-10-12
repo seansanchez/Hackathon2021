@@ -16,8 +16,8 @@
     "ResourceName": "[concat(parameters('AppName'), '-', parameters('Environment'))]",
     "ResourceNameWithoutHyphens": "[replace(variables('ResourceName'), '-', '')]",
     "AadDeveloperObjectId": "affe60f0-8fb4-47b8-b5aa-c2cad5683813",
-    "ApiAppName": "[concat(parameters('AppName'), '-api-', parameters('Environment'))]",
-    "UIAppName": "[concat(parameters('AppName'), '-ui-', parameters('Environment'))]"
+    "ApiAppName": "[concat(variables('ResourceName'), '-api')]",
+    "UIAppName": "[concat(variables('ResourceName'), '-ui')]"
   },
   "resources": [
     {

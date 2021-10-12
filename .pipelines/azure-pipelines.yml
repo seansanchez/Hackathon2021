@@ -52,5 +52,5 @@ stages:
                   armDeploymentResourceGroup: 'h21wellness-ppe'
                   armDeploymentLocation: 'West US'
                   configurationName: 'ppe'
-                  apiAppName: 'h21wellness-api-ppe'
-                  uiAppName: 'h21wellness-ui-ppe'
+                  apiAppName: 'h21wellness-ppe-api'
+                  uiAppName: 'h21wellness-ppe-ui'
