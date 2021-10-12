@@ -1,0 +1,100 @@
+@import "src/styles.scss";
+
+camera-view.disabled,
+prey-list.disabled {
+    pointer-events: none;
+}
+
+.time-stamp {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 1.5rem;
+    color: white;
+    padding: 0.25rem;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.game-over-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background-color: white;
+    height: 20rem;
+    width: 20rem;
+    max-width: 100%;
+    border-radius: $container-radius;
+    user-select: none;
+
+    * {
+        display: block;
+        padding: 0.5rem;
+    }
+
+    .title {
+        background-color: $primary-color;
+        color: white;
+        font-weight: 600;
+        font-size: 1.5rem;
+        text-align: center;
+        margin-bottom: 1rem;
+        border-top-left-radius: $container-radius;
+        border-top-right-radius: $container-radius;
+    }
+
+    .subtitle {
+        font-size: 1.25rem;
+        text-align: center;
+        font-weight: 600;
+        color: $primary-color;
+        margin-bottom: 1rem;
+    }
+
+    .score-descriptor {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .final-score {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        font-weight: 600;
+        color: $primary-color;
+        margin-top: 1rem;
+    }
+
+    button.share {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        left: 0;
+        right: 0;
+        margin: auto;
+        color: $primary-color-5;
+        background-color: transparent;
+        border-color: $primary-color-5;
+        width: 10rem;
+    }
+}
+
+.error-msg {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0;
+    right: 0;
+    background-color: white;
+    color: darkred;
+    font-weight: 600;
+    text-align: center;
+    padding: 0.5rem;
+    width: 10rem;
+    margin: auto;
+    border-radius: $action-radius;
+}
