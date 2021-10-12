@@ -9,6 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H21.Wellness.Api", "src\H21
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H21.Wellness.Api.Tests", "test\H21.Wellness.Api.Tests\H21.Wellness.Api.Tests.csproj", "{7395D2DF-2A98-438B-B017-2FAAEF4297DF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H21.TestCore", "test\H21.TestCore\H21.TestCore.csproj", "{3BADB1A0-3137-4C70-89A4-107D879C7CF6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H21.Wellness.Tests", "test\H21.Wellness.Tests\H21.Wellness.Tests.csproj", "{6CD07655-DAC9-41A7-9215-EFD9CAC84544}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H21.Wellness", "src\H21.Wellness\H21.Wellness.csproj", "{F953648A-F1C0-4D47-9C32-3F8E5A845E57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -20,15 +26,25 @@ Global
 		{9DE7023F-0457-4F85-9B20-D526AFF46BBB}.Release|x64.ActiveCfg = Release|x64
 		{9DE7023F-0457-4F85-9B20-D526AFF46BBB}.Release|x64.Build.0 = Release|x64
 		{7395D2DF-2A98-438B-B017-2FAAEF4297DF}.Debug|x64.ActiveCfg = Debug|x64
-		{7395D2DF-2A98-438B-B017-2FAAEF4297DF}.Debug|x64.Build.0 = Debug|x64
 		{7395D2DF-2A98-438B-B017-2FAAEF4297DF}.Release|x64.ActiveCfg = Release|x64
-		{7395D2DF-2A98-438B-B017-2FAAEF4297DF}.Release|x64.Build.0 = Release|x64
+		{3BADB1A0-3137-4C70-89A4-107D879C7CF6}.Debug|x64.ActiveCfg = Debug|x64
+		{3BADB1A0-3137-4C70-89A4-107D879C7CF6}.Debug|x64.Build.0 = Debug|x64
+		{3BADB1A0-3137-4C70-89A4-107D879C7CF6}.Release|x64.ActiveCfg = Release|x64
+		{3BADB1A0-3137-4C70-89A4-107D879C7CF6}.Release|x64.Build.0 = Release|x64
+		{6CD07655-DAC9-41A7-9215-EFD9CAC84544}.Debug|x64.ActiveCfg = Debug|x64
+		{6CD07655-DAC9-41A7-9215-EFD9CAC84544}.Release|x64.ActiveCfg = Release|x64
+		{F953648A-F1C0-4D47-9C32-3F8E5A845E57}.Debug|x64.ActiveCfg = Debug|x64
+		{F953648A-F1C0-4D47-9C32-3F8E5A845E57}.Debug|x64.Build.0 = Debug|x64
+		{F953648A-F1C0-4D47-9C32-3F8E5A845E57}.Release|x64.ActiveCfg = Release|x64
+		{F953648A-F1C0-4D47-9C32-3F8E5A845E57}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7395D2DF-2A98-438B-B017-2FAAEF4297DF} = {A474EA9D-E866-4D49-9495-87C257BB6F13}
+		{3BADB1A0-3137-4C70-89A4-107D879C7CF6} = {A474EA9D-E866-4D49-9495-87C257BB6F13}
+		{6CD07655-DAC9-41A7-9215-EFD9CAC84544} = {A474EA9D-E866-4D49-9495-87C257BB6F13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF5C5D0E-6452-4731-9DA1-565A3E8AB71F}

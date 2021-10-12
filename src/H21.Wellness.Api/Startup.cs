@@ -1,3 +1,6 @@
+using H21.Wellness.Extensions;
+using H21.Wellness.Persistence;
+using H21.Wellness.Persistence.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +22,13 @@ namespace H21.Wellness.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+            services.AddAzureStorageOptions();
+            services.AddSingleton<IAzureStorageClientFactory, AzureStorageClientFactory>();
+
+            services
+                .AddHealthChecks()
+                .AddCheck<AzureTableStorageHealthCheck>(nameof(AzureTableStorageHealthCheck));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -47,6 +57,7 @@ namespace H21.Wellness.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
             });
         }
     }
