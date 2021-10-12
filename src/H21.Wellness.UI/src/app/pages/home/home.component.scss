@@ -18,16 +18,12 @@
         width: 100%;
         justify-content: space-around;
     
-        button {
+        button.play {
             margin-bottom: 1rem;
             width: 100%;
             max-width: 20rem;
-            background-color: black;
-            color: $primary-color-5;
-        
-            &.play {
-                border-color: $primary-color-5;
-            }
+            background-color: $primary-color-2;
+            color: white;
         }
     }
 }
