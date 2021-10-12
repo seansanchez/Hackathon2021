@@ -263,7 +263,7 @@
         "[resourceId('Microsoft.CognitiveServices/accounts', parameters('ResourceName'))]"
       ],
       "properties": {
-        "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('ResourceName')),'2015-05-01-preview').key1]",
+        "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('ResourceName')),'2021-04-30').key1]",
         "attributes": {
           "enabled": true
         }
