@@ -5,6 +5,21 @@ namespace H21.Wellness.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static void AddCustomVisionOptions(this IServiceCollection source, string section = null)
+        {
+            source.ThrowIfNull(nameof(source));
+
+            section ??= nameof(CustomVisionOptions);
+
+            source
+                .AddOptions<CustomVisionOptions>()
+                .Configure<IConfiguration>((settings, configuration) =>
+                {
+                    configuration.GetSection(section).Bind(settings);
+                })
+                .ValidateDataAnnotations();
+        }
+
         public static void AddAzureStorageOptions(this IServiceCollection source, string section = null)
         {
             source.ThrowIfNull(nameof(source));
