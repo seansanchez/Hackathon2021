@@ -18,6 +18,29 @@
   },
   "resources": [
     {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2021-04-30",
+      "name": "[parameters('ResourceName')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "S1"
+      },
+      "kind": "ComputerVision",
+      "identity": {
+        "type": "None",
+        "userAssignedIdentities": {}
+      },
+      "properties": {
+        "customSubDomainName": "[parameters('ResourceName')]",
+        "networkAcls": {
+          "defaultAction": "Allow",
+          "virtualNetworkRules": [],
+          "ipRules": []
+        },
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
       "type": "microsoft.operationalinsights/workspaces",
       "apiVersion": "2020-10-01",
       "name": "[parameters('ResourceName')]",
@@ -225,6 +248,22 @@
       ],
       "properties": {
         "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('ResourceNameWithoutHyphens'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('ResourceNameWithoutHyphens')),'2015-05-01-preview').key1)]",
+        "attributes": {
+          "enabled": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2016-10-01",
+      "name": "[concat(parameters('ResourceName'), '/CustomVisionOptions--ApiKey')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts', variables('ResourceName'))]"
+      ],
+      "properties": {
+        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('ResourceNameWithoutHyphens')),'2015-05-01-preview').key1]",
         "attributes": {
           "enabled": true
         }
