@@ -1,4 +1,4 @@
-using Fenix.Extensions;
+using H21.Wellness.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
