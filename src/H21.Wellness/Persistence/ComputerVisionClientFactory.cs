@@ -18,7 +18,6 @@ namespace H21.Wellness.Persistence
             options.Value.ApiKey.ThrowIfNullOrWhitespace($"{nameof(options)}.{nameof(options.Value)}.{nameof(options.Value.ApiKey)}");
             options.Value.Endpoint.ThrowIfNullOrWhitespace($"{nameof(options)}.{nameof(options.Value)}.{nameof(options.Value.Endpoint)}");
 
-
             _options = options;
         }
 
