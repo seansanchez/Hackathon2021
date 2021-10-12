@@ -2,14 +2,18 @@
     <video #video autoplay></video>
     <canvas #canvas></canvas>
 
-    <button class="playButton" (click)="startPlaying();" [disabled]="isLoading" *ngIf="!startedStreaming">Start</button>
+    <loading-indicator *ngIf="isLoading"></loading-indicator>
+    <button class="playButton" (click)="startPlaying();" *ngIf="!isLoading && !startedStreaming"
+        [@popFadeInState]="'active'">Start</button>
 
     <div class="button-bar">
-        <button class="captureButton" (click)="captureScreenshot()" *ngIf="isStreaming">
-            <i class="ms-Icon ms-Icon--Camera" aria-hidden="true"></i>
+        <button class="captureButton" (click)="captureScreenshot()" *ngIf="startedStreaming"
+            [disabled]="!isStreaming || imageProcessing">
+            <i class="ms-Icon ms-Icon--Camera" aria-hidden="true" *ngIf="!imageProcessing"></i>
+            <loading-indicator *ngIf="imageProcessing"></loading-indicator>
         </button>
-        <button class="flipButton" (click)="switchCameras()" [disabled]="isLoading || !isStreaming"
-            *ngIf="canSwitchCameras">
+        <button class="flipButton" (click)="switchCameras()" [disabled]="!isStreaming || imageProcessing"
+            *ngIf="startedStreaming && canSwitchCameras">
             <i class="ms-Icon ms-Icon--Sync" aria-hidden="true"></i>
         </button>
     </div>
