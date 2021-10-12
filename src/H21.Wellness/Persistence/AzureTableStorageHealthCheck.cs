@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using H21.Wellness.Extensions;
-using H21.Wellness.Persistence.Interfaces;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
