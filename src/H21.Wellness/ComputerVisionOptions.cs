@@ -1,6 +1,6 @@
 ﻿namespace H21.Wellness
 {
-    public class CustomVisionOptions
+    public class ComputerVisionOptions
     {
         public string Endpoint { get; set; }
 
