@@ -158,6 +158,7 @@
       ],
       "properties": {
         "linuxFxVersion": "NODE|14-lts",
+        "appCommandLine": "pm2 serve /home/site/wwwroot --no-daemon --spa",
         "alwaysOn": true
       }
     },
