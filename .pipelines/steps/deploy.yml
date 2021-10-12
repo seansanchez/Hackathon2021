@@ -9,6 +9,8 @@ parameters:
     type: string
   - name: apiAppName
     type: string
+  - name: uiAppName
+    type: string
 
 steps:
 
@@ -32,9 +34,17 @@ steps:
       deploymentOutputs: 'ArmOutput'
 
   - task: AzureWebApp@1
-    displayName: Azure WebApp Deployment
+    displayName: Deploy WebApp - API
     inputs:
       azureSubscription: '${{ parameters.armDeploymentSubscription }}'
       resourceGroupName: '${{ parameters.armDeploymentResourceGroup }}'
       appName: '${{ parameters.apiAppName }}'
       package: $(Pipeline.Workspace)/drop/H21.Wellness.Api.zip
+
+  - task: AzureWebApp@1
+    displayName: Deploy WebApp - UI
+    inputs:
+      azureSubscription: '${{ parameters.armDeploymentSubscription }}'
+      resourceGroupName: '${{ parameters.armDeploymentResourceGroup }}'
+      appName: '${{ parameters.uiAppName }}'
+      package: $(Pipeline.Workspace)/drop/H21.Wellness.UI.zip

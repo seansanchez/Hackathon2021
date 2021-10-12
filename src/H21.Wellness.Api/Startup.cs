@@ -26,6 +26,8 @@ namespace H21.Wellness.Api
             services.AddAzureStorageOptions();
             services.AddSingleton<IAzureStorageClientFactory, AzureStorageClientFactory>();
 
+            services.AddCustomVisionOptions();
+
             services
                 .AddHealthChecks()
                 .AddCheck<AzureTableStorageHealthCheck>(nameof(AzureTableStorageHealthCheck));
