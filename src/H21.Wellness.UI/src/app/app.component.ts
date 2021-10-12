@@ -13,8 +13,4 @@ export class AppComponent {
   public goHome(): void {
     this.router.navigate(['']);
   }
-
-  public isNotHome(): boolean {
-    return this.router.url !== '/';
-  }
 }

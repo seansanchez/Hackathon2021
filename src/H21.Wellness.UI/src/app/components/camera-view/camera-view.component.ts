@@ -19,11 +19,13 @@ export class CameraViewComponent implements OnInit {
 
     /** Initialization lifecycle hook. */
     public ngOnInit(): void {
+        const videoBounds = this.videoPlayer.getBoundingClientRect();
+        const ratio = videoBounds.height / videoBounds.width;
         this.camera = new Camera(
             {
-                min: 720,
-                ideal: 1080,
-                max: 1440,
+                min: 720 * ratio,
+                ideal: 1080 * ratio,
+                max: 1440 * ratio,
             },
             {
                 min: 720,
@@ -33,36 +35,36 @@ export class CameraViewComponent implements OnInit {
         );
     }
 
-    public get isLoading() {
+    public get isLoading(): boolean {
         return this.camera.isLoading;
     }
 
-    public get isStreaming() {
+    public get isStreaming(): boolean {
         return this.camera.isStreaming;
     }
 
-    public get canSwitchCameras() {
+    public get canSwitchCameras(): boolean {
         return this.camera.canSwitchCameraDirections();
     }
 
-    public get canToggleLenses() {
+    public get canToggleLenses(): boolean {
         return this.camera.canToggleLenses();
     }
 
-    public get videoPlayer() {
+    public get videoPlayer(): HTMLVideoElement {
         return this.video.nativeElement;
     }
 
-    public get captureCanvas() {
+    public get captureCanvas(): HTMLCanvasElement {
         return this.canvas.nativeElement;
     }
 
-    public startPlaying() {
+    public startPlaying(): void {
         this.camera.viewCameraStream(this.videoPlayer);
         this.startedStreaming = true;
     }
 
-    public switchCameras() {
+    public switchCameras(): void {
         this.camera.switchCameraDirection(this.videoPlayer);
     }
 
@@ -76,6 +78,9 @@ export class CameraViewComponent implements OnInit {
                 const screenshot = this.captureCanvas.toDataURL('image/png')
                 this.screenshots.splice(0, 0, screenshot);
                 this.hasScreenshot = true;
+                console.log(screenshot);
+                console.log(this.captureCanvas.width);
+                console.log(this.captureCanvas.height);
             }
         }
     }

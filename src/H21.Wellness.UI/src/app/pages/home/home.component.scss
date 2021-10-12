@@ -10,13 +10,14 @@
         margin-bottom: 1rem;
         width: 100%;
         max-width: 20rem;
+        color: $primary-color;
     
         &.play {
-            border-color: $secondary-color;
+            border-color: $primary-color-2;
         }
     
         &.create {
-            border-color: $tertiary-color;
+            border-color: $primary-color-2;
         }
     }
 }
