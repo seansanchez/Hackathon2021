@@ -1,5 +1,4 @@
 ﻿using H21.Wellness.Extensions;
-using H21.Wellness.Persistence.Interfaces;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
