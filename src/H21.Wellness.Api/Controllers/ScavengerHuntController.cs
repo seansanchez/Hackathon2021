@@ -27,7 +27,7 @@ namespace H21.Wellness.Api.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(GetScavengerHuntResponse), StatusCodes.Status200OK)]
-        public Task<IActionResult> GetScavengerHuntAsync(Guid id)
+        public Task<IActionResult> GetScavengerHuntAsync([FromRoute] Guid id)
         {
             var response = new GetScavengerHuntResponse
             {
