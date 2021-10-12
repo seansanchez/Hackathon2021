@@ -292,7 +292,7 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(variables('ResourceName'), '/CustomVisionOptions--ApiKey')]",
+      "name": "[concat(variables('ResourceName'), '/ComputerVisionOptions--ApiKey')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('ResourceName'))]",
