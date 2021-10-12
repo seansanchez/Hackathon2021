@@ -29,10 +29,6 @@ steps:
       archiveFile: $(System.ArtifactsDirectory)/output/H21.Wellness.UI.zip
       replaceExistingArchive: true
 
-  - publish: '$(System.ArtifactsDirectory)/output/H21.Wellness.UI.zip'
-    displayName: 'Publish - H21.Wellness.UI'
-    artifact: 'drop'
-
   - task: UseDotNet@2
     displayName: 'Use .NET Core 5.0 (latest)'
     inputs:
@@ -70,9 +66,9 @@ steps:
         includeRootFolder: false
         archiveFile: "$(System.ArtifactsDirectory)/output/${{ project }}.zip"
     
-    - publish: '$(System.ArtifactsDirectory)/output/${{ project }}.zip'
-      displayName: 'Publish - App'
-      artifact: 'drop'
+  - publish: '$(System.ArtifactsDirectory)/output/*.zip'
+    displayName: 'Publish - App'
+    artifact: 'drop'
 
   - task: PowerShell@2
     displayName: 'Buildout Artifacts'
