@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Azure.Core;
 using Azure.Identity;
 using Microsoft.Extensions.Configuration;
 
@@ -62,7 +63,16 @@ namespace H21.Wellness.Extensions
 
             if (!string.IsNullOrWhiteSpace(keyVaultUri))
             {
-                source.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
+                var environment = Environment.GetEnvironmentVariable(Constants.EnvironmentSettings.Environment);
+
+                if (!string.IsNullOrWhiteSpace(environment) && environment.Equals("Development"))
+                {
+                    source.AddAzureKeyVault(new Uri(keyVaultUri), new AzureCliCredential());
+                }
+                else
+                {
+                    source.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
+                }
             }
         }
     }
