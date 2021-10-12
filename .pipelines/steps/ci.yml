@@ -23,7 +23,7 @@ steps:
   - task: ArchiveFiles@2
     displayName: 'Archive files'
     inputs:
-      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/H21.Wellness.UI/dist/H21.Wellness.UI/'
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/H21.Wellness.UI/dist/H21WellnessUI/'
       includeRootFolder: false
       archiveType: zip
       archiveFile: $(System.ArtifactsDirectory)/output/H21.Wellness.UI.zip
