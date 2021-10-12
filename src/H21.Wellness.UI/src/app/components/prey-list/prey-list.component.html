@@ -1,0 +1,20 @@
+<div #container class="list-container" [class.expanded]="expanded">
+    <div class="header">
+        <div class="grab-handle"></div>
+        <span class="title">current item:</span>
+        <h1>{{ currItem.name }}</h1>
+        <button class="bordered" (click)="expanded = !expanded">
+            <i class="ms-Icon ms-Icon--ChevronUp" aria-hidden="true" *ngIf="!expanded"></i>
+            <i class="ms-Icon ms-Icon--ChevronDown" aria-hidden="true" *ngIf="expanded"></i>
+        </button>
+    </div>
+
+    <div class="list">
+        <div class="option" [class.complete]="item.complete" *ngFor="let item of items; let i = index;" (click)="selectItem(item)">
+            <span class="number">{{ i + 1 }}.</span>
+            <span class="name">{{ item.name }}</span>
+            <i class="ms-Icon ms-Icon--CheckMark" aria-hidden="true" *ngIf="item.complete"></i>
+            <div class="strike-through" *ngIf="item.complete"></div>
+        </div>
+    </div>
+</div>
