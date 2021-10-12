@@ -14,9 +14,32 @@
   },
   "variables": {
     "ResourceNameWithoutHyphens": "[replace(parameters('ResourceName'), '-', '')]",
-    "AadDeveloperObjectId": "59b1572c-d127-4c2c-a695-19a8a0927a30"
+    "AadDeveloperObjectId": "affe60f0-8fb4-47b8-b5aa-c2cad5683813"
   },
   "resources": [
+    {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2021-04-30",
+      "name": "[parameters('ResourceName')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "S1"
+      },
+      "kind": "ComputerVision",
+      "identity": {
+        "type": "None",
+        "userAssignedIdentities": {}
+      },
+      "properties": {
+        "customSubDomainName": "[parameters('ResourceName')]",
+        "networkAcls": {
+          "defaultAction": "Allow",
+          "virtualNetworkRules": [],
+          "ipRules": []
+        },
+        "publicNetworkAccess": "Enabled"
+      }
+    },
     {
       "type": "microsoft.operationalinsights/workspaces",
       "apiVersion": "2020-10-01",
@@ -225,6 +248,22 @@
       ],
       "properties": {
         "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('ResourceNameWithoutHyphens'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('ResourceNameWithoutHyphens')),'2015-05-01-preview').key1)]",
+        "attributes": {
+          "enabled": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2016-10-01",
+      "name": "[concat(parameters('ResourceName'), '/CustomVisionOptions--ApiKey')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('ResourceName'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('ResourceName'))]"
+      ],
+      "properties": {
+        "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('ResourceName')),'2021-04-30').key1]",
         "attributes": {
           "enabled": true
         }
