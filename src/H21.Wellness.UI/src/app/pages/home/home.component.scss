@@ -1,23 +1,33 @@
 @import 'src/styles.scss';
 
-.button-container {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-content: space-around;
+.home-container {
+    padding: 1rem;
 
-    button {
-        margin-bottom: 1rem;
+    .text-box {
+        color: white;
+        font-size: 1.25rem;
+    }
+
+    .button-container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-wrap: wrap;
         width: 100%;
-        max-width: 20rem;
-        color: $primary-color;
+        justify-content: space-around;
     
-        &.play {
-            border-color: $primary-color-2;
-        }
-    
-        &.create {
-            border-color: $primary-color-2;
+        button {
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 20rem;
+            background-color: black;
+            color: $primary-color-5;
+        
+            &.play {
+                border-color: $primary-color-5;
+            }
         }
     }
 }
