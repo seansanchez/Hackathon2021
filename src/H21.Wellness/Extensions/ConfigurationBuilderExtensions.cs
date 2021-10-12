@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
 using Azure.Identity;
-using H21.Wellness;
-using H21.Wellness.Extensions;
 using Microsoft.Extensions.Configuration;
 
-namespace Fenix.Extensions
+namespace H21.Wellness.Extensions
 {
     /// <summary>
     ///     Provides extension methods for <see cref="IConfigurationBuilder"/>.

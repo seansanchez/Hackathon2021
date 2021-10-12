@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
 using H21.Wellness.Extensions;
-using H21.Wellness.Persistence.Interfaces;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -13,7 +13,8 @@ namespace H21.Wellness.Persistence
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IOptions<AzureStorageOptions> _options;
-        private readonly SemaphoreSlim _semaphore;
+        private readonly SemaphoreSlim _cloudTableSemaphore;
+        private readonly SemaphoreSlim _blobContainerClientSemaphore;
 
         public AzureStorageClientFactory(
             IMemoryCache memoryCache,
@@ -26,7 +27,8 @@ namespace H21.Wellness.Persistence
 
             _memoryCache = memoryCache;
             _options = options;
-            _semaphore = new SemaphoreSlim(1);
+            _cloudTableSemaphore = new SemaphoreSlim(1);
+            _blobContainerClientSemaphore = new SemaphoreSlim(1);
         }
 
         public async Task<CloudTable> GetCloudTableAsync(
@@ -43,7 +45,7 @@ namespace H21.Wellness.Persistence
             {
                 try
                 {
-                    await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                    await _cloudTableSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                     exists = _memoryCache.TryGetValue(cacheKey, out cloudTable);
 
@@ -62,11 +64,67 @@ namespace H21.Wellness.Persistence
                 }
                 finally
                 {
-                    _semaphore.Release();
+                    _cloudTableSemaphore.Release();
                 }
             }
 
             return cloudTable;
+        }
+
+        public async Task<BlobContainerClient> GetBlobContainerClientAsync(
+            string blobContainerName,
+            CancellationToken cancellationToken = default)
+        {
+            blobContainerName.ThrowIfNullOrWhitespace(nameof(blobContainerName));
+
+            var cacheKey = $"{nameof(BaseAzureTableStorageRepository)}:BlobContainer:{blobContainerName}";
+
+            var exists = _memoryCache.TryGetValue(cacheKey, out BlobContainerClient blobContainerClient);
+
+            if (!exists)
+            {
+                try
+                {
+                    await _blobContainerClientSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+                    exists = _memoryCache.TryGetValue(cacheKey, out blobContainerClient);
+
+                    if (!exists)
+                    {
+                        var blobServiceClient = new BlobServiceClient(_options.Value.ConnectionString);
+
+                        blobContainerClient = blobServiceClient.GetBlobContainerClient(blobContainerName);
+                        await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+                        var cacheExpiration = DateTimeOffset.UtcNow.AddMilliseconds(_options.Value.StorageClientCacheExpirationInMs);
+
+                        _memoryCache.Set(cacheKey, blobContainerClient, cacheExpiration);
+                    }
+                }
+                finally
+                {
+                    _blobContainerClientSemaphore.Release();
+                }
+            }
+
+            return blobContainerClient;
+        }
+
+        public async Task<BlobClient> GetBlobClientAsync(
+            string blobContainerName,
+            string blobName,
+            CancellationToken cancellationToken = default)
+        {
+            blobContainerName.ThrowIfNullOrWhitespace(nameof(blobContainerName));
+            blobName.ThrowIfNullOrWhitespace(nameof(blobName));
+
+            var blobContainerClient =
+                await GetBlobContainerClientAsync(
+                        blobContainerName: blobContainerName,
+                        cancellationToken: cancellationToken)
+                    .ConfigureAwait(false);
+
+            return blobContainerClient.GetBlobClient(blobName);
         }
     }
 }

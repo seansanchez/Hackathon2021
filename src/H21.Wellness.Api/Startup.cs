@@ -1,6 +1,5 @@
 using H21.Wellness.Extensions;
 using H21.Wellness.Persistence;
-using H21.Wellness.Persistence.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
