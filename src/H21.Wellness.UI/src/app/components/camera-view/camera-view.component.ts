@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Camera } from "camera-web-api";
 import { PopFadeInAnimation } from 'src/app/animations/popFadeIn.animation';
 
@@ -23,18 +23,7 @@ export class CameraViewComponent implements OnInit {
     public ngOnInit(): void {
         const videoBounds = this.videoPlayer.getBoundingClientRect();
         const ratio = videoBounds.height / videoBounds.width;
-        this.camera = new Camera(
-            {
-                min: 720 * ratio,
-                ideal: 1080 * ratio,
-                max: 1440 * ratio,
-            },
-            {
-                min: 720,
-                ideal: 1080,
-                max: 1440,
-            }
-        );
+        this.camera = new Camera(720 * ratio, 720);
     }
 
     /** Whether the camera is loading or not. */

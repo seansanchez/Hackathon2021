@@ -28,18 +28,20 @@
         Final Score: {{ finalScore }}
     </span>
 
-    <button class="share" (click)="shareScore(scoreContainer)" *ngIf="canShare" [disabled]="sharing">
-        <ng-container *ngIf="!sharing">
-            <i class="ms-Icon ms-Icon--Share" aria-hidden="true"></i>
-            share game
-        </ng-container>
-        <loading-indicator *ngIf="sharing"></loading-indicator>
-    </button>
-
-    <button class="album" (click)="viewPhotoAlbum(true)">
-        <i class="ms-Icon ms-Icon--PhotoCollection" aria-hidden="true"></i>
-        view photos
-    </button>
+    <div class="button-container">
+        <button class="share" (click)="shareScore(scoreContainer)" *ngIf="canShare" [disabled]="sharing">
+            <ng-container *ngIf="!sharing">
+                <i class="ms-Icon ms-Icon--Share" aria-hidden="true"></i>
+                share game
+            </ng-container>
+            <loading-indicator *ngIf="sharing"></loading-indicator>
+        </button>
+    
+        <button class="album" (click)="viewPhotoAlbum(true)">
+            <i class="ms-Icon ms-Icon--PhotoCollection" aria-hidden="true"></i>
+            view photos
+        </button>
+    </div>
 </div>
 
 <div class="error-msg" *ngIf="gameComplete && !sharing && errorSharing" [@popFadeInState]="'active'">
