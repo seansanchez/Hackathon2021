@@ -38,13 +38,13 @@ namespace H21.Wellness.Services
         public async Task<bool> IsValid(Guid imageId, string imageDataUri, CancellationToken cancellationToken = default)
         {
             var image = await this._scavengerHuntRepository.GetScavengerHuntItemAsync(imageId, cancellationToken).ConfigureAwait(false);
-            var possibleNames = image.Synonyms.Select(name => name.ToLower()).ToList();
-            possibleNames.Add(image.Name.ToLower());
+            var possibleNames = image.Synonyms.Select(name => name.ToLower().Replace(" ", "").Trim()).ToList();
+            possibleNames.Add(image.Name.ToLower().Replace(" ", "").Trim());
 
             var tagResult = await this.GetTagsFromImageUri(imageDataUri).ConfigureAwait(false);
             var highConfidenceTags = tagResult.Tags
                 .Where(tag => tag.Confidence >= Constants.ComputerVisionConstants.MinConfidence)
-                .Select(tag => tag.Name.ToLower())
+                .Select(tag => tag.Name.ToLower().Replace(" ", "").Trim())
                 .ToList();
 
             return highConfidenceTags
