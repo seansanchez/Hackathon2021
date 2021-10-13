@@ -34,17 +34,9 @@ export class ApiService {
 
     /** Gets a calculated score from the API */
     public checkImageMatch(itemId: string, imageUri: string): Observable<IImageConfidence> {
-        // return this.http.post<any>(`${this._apiUrl}/api/scavenger-hunt/vision`, {
-        //     id: itemId,
-        //     imageData: imageUri
-        // });
-        return timer(1000).pipe(
-            first(),
-            map(() => <IImageConfidence>{
-                id: itemId,
-                pass: true,
-                confidence: 0.95
-            })
-        );
+        return this.http.post<any>(`${this._apiUrl}/api/scavenger-hunt/validate`, {
+            id: itemId,
+            imageDateUri: imageUri
+        });
     }
 }

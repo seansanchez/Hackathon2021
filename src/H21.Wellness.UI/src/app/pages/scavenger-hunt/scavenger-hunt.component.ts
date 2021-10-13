@@ -202,10 +202,17 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     public imageCaptured(imageUri: string): void {
         this.updateImageProcessingStatus(true);
         this.apiService.checkImageMatch(this._currItem.id, imageUri).subscribe(res => {
-            if (res && res.pass) {
+            if (res && res.isMatch) {
                 this.preyImageMap.set(this._currItem, imageUri);
                 this.preyList.completeItem(this._currItem);
                 this.updateImageProcessingStatus(false);
+            } else {
+                this.dialogService.displayConfirmationDialog(
+                    `Hmmm... that picture doesn't seem to contain a "<i>${this._currItem.name}</i>". <br>Try taking another one!`,
+                    'No match', 'Ok')
+                    .subscribe(() => {
+                        this.updateImageProcessingStatus(false);
+                    });
             }
         });
     }
