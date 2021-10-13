@@ -11,6 +11,8 @@ namespace H21.Wellness.Models
 
         public string Description { get; set; }
 
+        public uint TimeLimitInMinutes { get; set; } = 20;
+
         public IEnumerable<ScavengerHuntItemModel> Items { get; set; }
     }
 }
