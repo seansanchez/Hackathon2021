@@ -7,6 +7,7 @@ using H21.Wellness.Api.Response;
 using H21.Wellness.Clients;
 using H21.Wellness.Extensions;
 using H21.Wellness.Models;
+using H21.Wellness.Persistence;
 using H21.Wellness.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,16 +22,20 @@ namespace H21.Wellness.Api.Controllers
     public class ScavengerHuntController : ControllerBase
     {
         private readonly IImageValidatorService _imageValidatorService;
+        private readonly IScavengerHuntRepository _scavengerHuntRepository;
         private readonly ILogger<ScavengerHuntController> _logger;
 
         public ScavengerHuntController(
             IImageValidatorService imageValidatorService,
+            IScavengerHuntRepository scavengerHuntRepository,
             ILogger<ScavengerHuntController> logger)
         {
             imageValidatorService.ThrowIfNull(nameof(logger));
+            scavengerHuntRepository.ThrowIfNull(nameof(scavengerHuntRepository));
             logger.ThrowIfNull(nameof(logger));
 
             this._imageValidatorService = imageValidatorService;
+            _scavengerHuntRepository = scavengerHuntRepository;
             this._logger = logger;
         }
 
@@ -125,8 +130,10 @@ namespace H21.Wellness.Api.Controllers
         // Anjana
         [HttpGet("image")]
         [ProducesResponseType(typeof(GetImagesResponse), StatusCodes.Status200OK)]
-        public Task<IActionResult> GetImagesAsync()
+        public async Task<IActionResult> GetImagesAsync()
         {
+            var images = await _scavengerHuntRepository.GetScavengerHuntItemsAsync();
+
             var response = new GetImagesResponse
             {
                 Images = new List<ScavengerHuntItemModel>()
@@ -142,7 +149,7 @@ namespace H21.Wellness.Api.Controllers
 
             var result = this.Ok(response);
 
-            return Task.FromResult<IActionResult>(result);
+            return result;
         }
 
         // Anjana

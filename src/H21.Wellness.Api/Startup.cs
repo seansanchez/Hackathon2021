@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
@@ -28,6 +29,7 @@ namespace H21.Wellness.Api
         {
             services.AddMemoryCache();
             services.AddAzureStorageOptions();
+            services.TryAddTransient<IScavengerHuntRepository, ScavengerHuntRepository>();
             services.AddSingleton<IAzureStorageClientFactory, AzureStorageClientFactory>();
             services.AddSingleton<IComputerVisionClientFactory, ComputerVisionClientFactory>();
             services.AddScoped<IImageValidatorService, ImageValidatorService>();
