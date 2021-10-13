@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using H21.Wellness.Api.Request;
 using H21.Wellness.Api.Response;
 using H21.Wellness.Extensions;
 using H21.Wellness.Models;
+using H21.Wellness.Models.Extensions;
 using H21.Wellness.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -122,23 +124,18 @@ namespace H21.Wellness.Api.Controllers
         }
 
         // Anjana
-        [HttpGet("image")]
-        [ProducesResponseType(typeof(GetImagesResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetImagesAsync()
+        [HttpGet("item")]
+        [ProducesResponseType(typeof(GetScavengerHuntItemsResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetImagesAsync(CancellationToken cancellationToken)
         {
-            var images = await _scavengerHuntRepository.GetScavengerHuntItemsAsync();
+            var items =
+                await _scavengerHuntRepository
+                    .GetScavengerHuntItemsAsync(cancellationToken)
+                    .ConfigureAwait(false);
 
-            var response = new GetImagesResponse
+            var response = new GetScavengerHuntItemsResponse
             {
-                Images = new List<ScavengerHuntItemModel>()
-                {
-                    new ScavengerHuntItemModel
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Image",
-                        Description = "Descr"
-                    }
-                }
+                Items = items.ToModels()
             };
 
             var result = this.Ok(response);
@@ -147,20 +144,11 @@ namespace H21.Wellness.Api.Controllers
         }
 
         // Anjana
-        [HttpGet("image/{id}")]
-        [ProducesResponseType(typeof(GetImageResponse), StatusCodes.Status200OK)]
-        public Task<IActionResult> GetImageAsync([FromRoute] Guid id)
+        [HttpGet("item/{id}")]
+        [ProducesResponseType(typeof(GetScavengerHuntItemResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetImageAsync([FromRoute] Guid id)
         {
-            var response = new GetImageResponse
-            {
-                Id = Guid.NewGuid(),
-                Name = "Image",
-                Description = "Descr"
-            };
-
-            var result = this.Ok(response);
-
-            return Task.FromResult<IActionResult>(result);
+            throw new NotImplementedException();
         }
 
         // steven
