@@ -132,7 +132,7 @@ namespace H21.Wellness.Api.Controllers
             return Task.FromResult<IActionResult>(result);
         }
 
-        [HttpGet("images/{id}")]
+        [HttpGet("image/{id}")]
         [ProducesResponseType(typeof(GetImageResponse), StatusCodes.Status200OK)]
         public Task<IActionResult> GetImageAsync([FromRoute] Guid id)
         {
