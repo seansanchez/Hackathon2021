@@ -34,6 +34,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     private _processing: boolean = false;
     private _gameCode!: string;
     private _gameName: string = '';
+    private _timeLimitMinutes!: number;
     private _gameLoading: boolean = true;
     private _scoring: boolean = false;
     private _viewPhotos = false;
@@ -91,6 +92,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                 if (scavengerHunt) {
                     this._gameName = scavengerHunt.name;
                     this._gameCode = scavengerHunt.id;
+                    this._timeLimitMinutes = scavengerHunt.timeLimitInMinutes;
                     this.items = scavengerHunt.items.map(i => <IPrey>{
                         id: i.id,
                         name: i.name,
@@ -108,7 +110,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
             this.cameraView.startCameraStream();
 
             this._gameInProgress = true;
-            this._gameOverTime = dayjs().add(20, 'minutes');
+            this._gameOverTime = dayjs().add(this._timeLimitMinutes, 'minutes');
             timer(500, 1000).pipe(
                 takeUntil(this._ngDestroy)
             ).subscribe(() => {
@@ -235,7 +237,8 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
         this._gameInProgress = false;
 
         this._scoring = true;
-        this.apiService.getScore(this._gameCode, this.numItemsComplete).subscribe(res => {
+        const timeToComplete = this._timeLimitMinutes - Math.floor(this._gameOverTime.diff(dayjs(), 'minutes'));
+        this.apiService.getScore(this._gameCode, this.numItemsComplete, timeToComplete).subscribe(res => {
             if (res) {
                 this._gameComplete = true;
                 this._scoring = false;
