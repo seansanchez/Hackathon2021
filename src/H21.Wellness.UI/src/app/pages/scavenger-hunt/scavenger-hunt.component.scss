@@ -111,29 +111,38 @@ loading-indicator {
         margin-bottom: 0.5rem;
     }
 
-    button.share,
-    button.album {
-        display: flex;
-        align-items: center;
+    .button-container {
         position: absolute;
         left: 0;
         right: 0;
-        margin: auto;
-        color: white;
-        background-color: $primary-color-5;
-        width: 14rem;
-
-        i {
-            margin-right: 0.5rem;
-        }
-    }
-
-    button.share {
         top: calc(100% + 0.5rem);
-    }
 
-    button.album {
-        top: calc(100% + 4.5rem);
+        button.share,
+        button.album {
+            display: flex;
+            align-items: center;
+            margin: auto;
+            color: white;
+            background-color: $primary-color-5;
+            width: 14rem;
+    
+            i {
+                margin-right: 0.5rem;
+            }
+        }
+
+        button.share {
+            margin-bottom: 1rem;
+        }
+
+        button.share:disabled {
+            opacity: 1;
+        }
+
+        button.share > loading-indicator {
+            color: white;
+            font-size: 2rem;
+        }
     }
 }
 
