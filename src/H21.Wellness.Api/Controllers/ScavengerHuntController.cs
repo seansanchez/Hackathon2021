@@ -9,6 +9,7 @@ using H21.Wellness.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace H21.Wellness.Api.Controllers
 {
@@ -163,6 +164,16 @@ namespace H21.Wellness.Api.Controllers
             var result = this.CreatedAtAction(nameof(PostValidateImageAsync), response);
 
             return Task.FromResult<IActionResult>(result);
+        }
+
+
+        [HttpGet]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        public object GetCuratedList()
+        {
+            string curatedList = System.IO.File.ReadAllText(@"..\Response\curatedList.json");
+            
+            return JsonConvert.DeserializeObject(curatedList); ;
         }
     }
 }
