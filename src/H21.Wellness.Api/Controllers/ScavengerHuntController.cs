@@ -6,6 +6,7 @@ using H21.Wellness.Api.Request;
 using H21.Wellness.Api.Response;
 using H21.Wellness.Extensions;
 using H21.Wellness.Models;
+using H21.Wellness.Models.Extensions;
 using H21.Wellness.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -126,19 +127,11 @@ namespace H21.Wellness.Api.Controllers
         [ProducesResponseType(typeof(GetImagesResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetImagesAsync()
         {
-            var images = await _scavengerHuntRepository.GetScavengerHuntItemsAsync();
+            var items = await _scavengerHuntRepository.GetScavengerHuntItemsAsync();
 
             var response = new GetImagesResponse
             {
-                Images = new List<ScavengerHuntItemModel>()
-                {
-                    new ScavengerHuntItemModel
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Image",
-                        Description = "Descr"
-                    }
-                }
+                Images = items.ToModels()
             };
 
             var result = this.Ok(response);
