@@ -1,18 +1,23 @@
-<camera-view #cameraView (gameStart)="startGame()" (imageCaptured)="imageCaptured($event)" *ngIf="!gameComplete"
-    [class.disabled]="imageProcessing"></camera-view>
+<camera-view #cameraView (gameStart)="startGame()" (imageCaptured)="imageCaptured($event)"
+    *ngIf="!gameComplete && !viewPhotos" [class.disabled]="imageProcessing"></camera-view>
 <prey-list #preyList [items]="items" (listComplete)="gameOver()" (itemSelected)="itemSelected($event)"
-    *ngIf="gameInProgress && !gameComplete" [class.disabled]="imageProcessing"></prey-list>
+    *ngIf="gameInProgress && !gameComplete && !viewPhotos" [class.disabled]="imageProcessing"></prey-list>
+<photo-album [gameName]="gameName" [preyImageMap]="preyImageMap" (close)="viewPhotoAlbum(false)" *ngIf="gameComplete && viewPhotos"></photo-album>
 
-<button class="playButton" (click)="startGame();" *ngIf="!gameLoading && !gameInProgress"
+<button class="playButton" (click)="startGame();"
+    *ngIf="cameraReady && !gameLoading && !gameInProgress && !scoring && !gameComplete"
     [@popFadeInState]="'active'">Start</button>
 
-<div class="time-stamp">
+<loading-indicator *ngIf="cameraReady && (gameLoading || scoring)"></loading-indicator>
+
+<div class="time-stamp" *ngIf="gameInProgress">
     {{ timeRemaining }}
 </div>
 
-<div #scoreContainer class="game-over-container" *ngIf="gameComplete" [@popFadeInState]="'active'">
+<div #scoreContainer class="game-over-container" *ngIf="gameComplete && !viewPhotos" [@popFadeInState]="'active'">
     <span class="title">Breath of Fresh Where?</span>
-    <span class="subtitle">{{gameName}}<br>Scavenger Hunt Complete!</span>
+    <span class="game-name">{{gameName}}</span>
+    <span class="subtitle">Scavenger Hunt Complete!</span>
     <span class="score-descriptor">
         <b>Items found:</b> {{ numItemsComplete }} out of {{ items.length }}
     </span>
@@ -23,12 +28,17 @@
         Final Score: {{ finalScore }}
     </span>
 
-    <button class="bordered share" (click)="shareScore(scoreContainer)" *ngIf="canShare" [disabled]="sharing">
+    <button class="share" (click)="shareScore(scoreContainer)" *ngIf="canShare" [disabled]="sharing">
         <ng-container *ngIf="!sharing">
             <i class="ms-Icon ms-Icon--Share" aria-hidden="true"></i>
-            share
+            share game
         </ng-container>
         <loading-indicator *ngIf="sharing"></loading-indicator>
+    </button>
+
+    <button class="album" (click)="viewPhotoAlbum(true)">
+        <i class="ms-Icon ms-Icon--PhotoCollection" aria-hidden="true"></i>
+        view photos
     </button>
 </div>
 

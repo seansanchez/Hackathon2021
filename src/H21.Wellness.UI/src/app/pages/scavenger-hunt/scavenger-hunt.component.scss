@@ -12,7 +12,20 @@ prey-list.disabled {
     font-size: 1.5rem;
     color: white;
     padding: 1rem;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: #25252583;
+}
+
+loading-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 3rem;
+    height: 3rem;
+    font-size: 3rem;
+    color: $primary-color-5;
 }
 
 .playButton {
@@ -32,17 +45,17 @@ prey-list.disabled {
 
 .game-over-container {
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 5rem;
     left: 0;
     right: 0;
     margin: auto;
     background-color: white;
-    height: 20rem;
+    height: max-content;
     width: 20rem;
     max-width: 100%;
     border-radius: $container-radius;
     user-select: none;
+    box-shadow: $ms-depth-shadow-4;
 
     * {
         display: block;
@@ -55,23 +68,36 @@ prey-list.disabled {
         font-weight: 600;
         font-size: 1.5rem;
         text-align: center;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
         border-top-left-radius: $container-radius;
         border-top-right-radius: $container-radius;
     }
 
+    .game-name,
     .subtitle {
         font-size: 1.25rem;
         text-align: center;
         font-weight: 600;
         color: $primary-color;
-        margin-bottom: 1rem;
+        padding: 0.25rem
+    }
+
+    .game-name {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .subtitle {
+        margin-bottom: 0.5rem;
     }
 
     .score-descriptor {
         display: flex;
         justify-content: space-around;
         align-items: center;
+        padding-right: 0.25;
+        color: $dark-grey;
     }
 
     .final-score {
@@ -81,21 +107,33 @@ prey-list.disabled {
         font-size: 2rem;
         font-weight: 600;
         color: $primary-color;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
     }
 
-    button.share {
+    button.share,
+    button.album {
         display: flex;
         align-items: center;
         position: absolute;
-        top: calc(100% + 0.5rem);
         left: 0;
         right: 0;
         margin: auto;
-        color: $primary-color-5;
-        background-color: transparent;
-        border-color: $primary-color-5;
-        width: 10rem;
+        color: white;
+        background-color: $primary-color-5;
+        width: 14rem;
+
+        i {
+            margin-right: 0.5rem;
+        }
+    }
+
+    button.share {
+        top: calc(100% + 0.5rem);
+    }
+
+    button.album {
+        top: calc(100% + 4.5rem);
     }
 }
 
