@@ -238,7 +238,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                     navigator.share(<ShareData>{
                         files: filesArray,
                         title: 'Breath of Fresh Where?',
-                        text: `Check out my scavenger hunt score! Play this hunt and see if you can do better:`,
+                        text: `I scored ${this.finalScore} points in this scavenger hunt! Play it and see if you can do better:`,
                         url: `${environment.uiUrl}/scavenger-hunt?game=${this._gameCode}`
                     })
                         .then(() => this._sharing = false)
