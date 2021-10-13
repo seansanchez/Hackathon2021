@@ -14,6 +14,8 @@ import { PhotoAlbumModule } from './components/photo-album/photo-album.module';
 import { PreyListModule } from './components/prey-list/prey-list.module';
 import { HomeComponent } from './pages/home/home.component';
 import { ScavengerHuntComponent } from './pages/scavenger-hunt/scavenger-hunt.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,11 @@ import { ScavengerHuntComponent } from './pages/scavenger-hunt/scavenger-hunt.co
     LoadingIndicatorModule,
     OverlayModule,
     PhotoAlbumModule,
-    PreyListModule
+    PreyListModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   bootstrap: [AppComponent]
 })
