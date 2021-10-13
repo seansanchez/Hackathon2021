@@ -31,6 +31,12 @@ export class CameraViewComponent implements OnInit {
         return this.camera.isLoading;
     }
 
+    /** Whether the camera is available or not. */
+    public get hasCameras(): boolean {
+        return this.camera.frontCameras.length > 0 || this.camera.rearCameras.length > 0;
+    }
+
+
     /** Whether the camera is streaming or not. */
     public get isStreaming(): boolean {
         return this.camera.isStreaming;

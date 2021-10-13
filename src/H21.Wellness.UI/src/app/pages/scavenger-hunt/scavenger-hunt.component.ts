@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, of, Subject, timer } from 'rxjs';
-import { catchError, skip, takeUntil } from 'rxjs/operators';
+import { catchError, first, skip, takeUntil } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
 import { IPrey } from 'src/app/models/IPrey';
@@ -49,6 +49,13 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
 
     /** Initialization lifecycle hook. */
     public ngOnInit(): void {
+        (console as any).stdError = console.error.bind(console);
+        (console as any).errors = [];
+        console.error = function () {
+            (console as any).errors.push(Array.from(arguments));
+            (console as any).stdError.apply(console, arguments);
+        };
+
         this.activatedRoute.queryParamMap
             .pipe(
                 takeUntil(this._ngDestroy)
@@ -61,6 +68,22 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                     this.getGame();
                 }
             });
+
+        timer(10000).pipe(first()).subscribe(() => {
+            if (!this.cameraView.hasCameras) {
+                this.dialogService.displayConfirmationDialog('Copy console dump', 'Error instantiating cameras', 'Copy')
+                    .subscribe(res => {
+                        if (res) {
+                            navigator.clipboard.writeText((console as any).errors.join(" --- "))
+                            .then(() => {
+                                this.dialogService.displayConfirmationDialog('Successfully copied console dump. Paste that into a message to Steven.', 'Copied', 'Ok').subscribe();
+                            }).catch(() => {
+                                this.dialogService.displayConfirmationDialog('Failed to copy console dump. Steven is sad.', 'Copy Fail', 'Cry').subscribe();
+                            });
+                        }
+                    });
+            }
+        });
     }
 
     /** Destroy lifecycle hook. */
@@ -103,19 +126,30 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     public startGame(): void {
         this._ngDestroy.next();
 
-        this.cameraView.startCameraStream();
+        if (this.cameraView.hasCameras) {
+            this.cameraView.startCameraStream();
 
-        this._gameInProgress = true;
-        this._gameOverTime = dayjs().add(20, 'minutes');
-        timer(500, 1000).pipe(
-            takeUntil(this._ngDestroy)
-        ).subscribe(() => {
-            this._secondsRemaining = this._gameOverTime.diff(dayjs(), 'seconds');
+            this._gameInProgress = true;
+            this._gameOverTime = dayjs().add(20, 'minutes');
+            timer(500, 1000).pipe(
+                takeUntil(this._ngDestroy)
+            ).subscribe(() => {
+                this._secondsRemaining = this._gameOverTime.diff(dayjs(), 'seconds');
 
-            if (this._secondsRemaining <= 0) {
-                this.gameOver();
-            }
-        });
+                if (this._secondsRemaining <= 0) {
+                    this.gameOver();
+                }
+            });
+        } else {
+            this.dialogService.displayConfirmationDialog('Sorry, we aren\'t detecting any cameras for your device... Try refreshing your browser', 'Uh oh', 'Refresh', 'Go Home')
+                .subscribe(res => {
+                    if (res) {
+                        window.location.replace(`${window.location.href}?game=${this._gameCode}`);
+                    } else {
+                        this.router.navigate(['/']);
+                    }
+                });
+        }
     }
 
     /** Gets the name of the scavenger hunt. */
@@ -202,10 +236,17 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     public imageCaptured(imageUri: string): void {
         this.updateImageProcessingStatus(true);
         this.apiService.checkImageMatch(this._currItem.id, imageUri).subscribe(res => {
-            if (res && res.pass) {
+            if (res && res.isMatch) {
                 this.preyImageMap.set(this._currItem, imageUri);
                 this.preyList.completeItem(this._currItem);
                 this.updateImageProcessingStatus(false);
+            } else {
+                this.dialogService.displayConfirmationDialog(
+                    `Hmmm... that picture doesn't seem to contain a "<i>${this._currItem.name}</i>". <br>Try taking another one!`,
+                    'No match', 'Ok')
+                    .subscribe(() => {
+                        this.updateImageProcessingStatus(false);
+                    });
             }
         });
     }
