@@ -1,12 +1,11 @@
-﻿using H21.Wellness.Extensions;
-using H21.Wellness.Persistence.Interfaces;
+﻿using System.IO;
+using System.Threading.Tasks;
+using H21.Wellness.Extensions;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Extensions.Options;
-using System.IO;
-using System.Threading.Tasks;
 
-namespace H21.Wellness.Persistence
+namespace H21.Wellness.Clients
 {
     public class ComputerVisionClientFactory : IComputerVisionClientFactory
     {

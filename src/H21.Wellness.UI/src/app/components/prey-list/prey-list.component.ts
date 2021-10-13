@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { IPrey } from "./IPrey";
+import { SlideUpFadeInAnimation } from "src/app/animations/slideUpFadeIn.animation";
+import { IPrey } from "../../models/IPrey";
 
 @Component({
     selector: 'prey-list',
     templateUrl: './prey-list.component.html',
-    styleUrls: ['./prey-list.component.scss']
+    styleUrls: ['./prey-list.component.scss'],
+    animations: [SlideUpFadeInAnimation]
 })
 export class PreyListComponent implements OnInit {
     @Input() public items: IPrey[] = [];       

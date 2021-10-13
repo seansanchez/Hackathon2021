@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  uiUrl: 'https://h21wellness-ppe-ui.azurewebsites.net',
+  apiUrl: 'https://h21wellness-ppe-api.azurewebsites.net'
 };
 
 /*

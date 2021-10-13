@@ -1,8 +1,8 @@
-﻿using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 
-namespace H21.Wellness.Persistence.Interfaces
+namespace H21.Wellness.Clients
 {
     public interface IComputerVisionClientFactory
     {

@@ -1,0 +1,15 @@
+<div class="backdrop" (click)="preventClose ? null : close(false)"></div>
+<div class="dialog" aria-label="Confirmation Dialog" *ngIf="shouldShowDialog()" [@popFadeInState]="'active'"
+    role="dialog" aria-modal="true" aria-haspopup="dialog" aria-hidden="false" aria-describedby="dialogBody"
+    cdkTrapFocus>
+    <h1>{{header}}</h1>
+    <p [innerHTML]="body"></p>
+    <div class="action-bar">
+        <button *ngIf="cancelActionLabel" (click)="close(false)" [attr.aria-label]="cancelActionLabel">
+            {{cancelActionLabel}}
+        </button>
+        <button class="primary" (click)="close(true)" [attr.aria-label]="confirmActionLabel">
+            {{confirmActionLabel}}
+        </button>
+    </div>
+</div>

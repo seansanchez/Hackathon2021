@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Camera } from "camera-web-api";
 import { PopFadeInAnimation } from 'src/app/animations/popFadeIn.animation';
 
@@ -10,7 +10,6 @@ import { PopFadeInAnimation } from 'src/app/animations/popFadeIn.animation';
 })
 export class CameraViewComponent implements OnInit {
 
-    @Output() public gameStart = new EventEmitter();
     @Output() public imageCaptured = new EventEmitter<string>();
     public startedStreaming = false;
 
@@ -24,24 +23,19 @@ export class CameraViewComponent implements OnInit {
     public ngOnInit(): void {
         const videoBounds = this.videoPlayer.getBoundingClientRect();
         const ratio = videoBounds.height / videoBounds.width;
-        this.camera = new Camera(
-            {
-                min: 720 * ratio,
-                ideal: 1080 * ratio,
-                max: 1440 * ratio,
-            },
-            {
-                min: 720,
-                ideal: 1080,
-                max: 1440,
-            }
-        );
+        this.camera = new Camera(720 * ratio, 720);
     }
 
     /** Whether the camera is loading or not. */
     public get isLoading(): boolean {
         return this.camera.isLoading;
     }
+
+    /** Whether the camera is available or not. */
+    public get hasCameras(): boolean {
+        return this.camera.frontCameras.length > 0 || this.camera.rearCameras.length > 0;
+    }
+
 
     /** Whether the camera is streaming or not. */
     public get isStreaming(): boolean {
@@ -77,11 +71,10 @@ export class CameraViewComponent implements OnInit {
         this._processing = processing;
     }
 
-    /** Starts the camera stream and the game. */
-    public startPlaying(): void {
+    /** Starts the camera stream. */
+    public startCameraStream(): void {
         this.camera.viewCameraStream(this.videoPlayer);
         this.startedStreaming = true;
-        this.gameStart.emit();
     }
 
     /** Switch camera directions (front to back). */

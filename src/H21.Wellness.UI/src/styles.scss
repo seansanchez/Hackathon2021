@@ -1,4 +1,4 @@
-@import 'office-ui-fabric-core/dist/sass/References';
+@import "office-ui-fabric-core/dist/sass/References";
 
 $primary-color: #036666;
 $primary-color-2: #14746f;
@@ -7,7 +7,7 @@ $primary-color-4: #358f80;
 $primary-color-5: #469d89;
 $primary-color-6: #99e2b4;
 
-$text-color: #605e5c;
+$dark-grey: #252525;
 
 $container-radius: 8px;
 $action-radius: 4px;
@@ -20,25 +20,20 @@ button {
     border-radius: $action-radius;
     height: 3rem;
     background-color: white;
-    border: none;
-    border-color: $text-color;
-    color: $text-color;
+    border: 2px solid transparent;
+    color: $dark-grey;
     padding: 0 1rem;
     cursor: pointer;
     font-size: 1.5rem;
     -webkit-tap-highlight-color: transparent;
 
-    &.bordered {
-        border: 2px solid;
-    }
-
-    &:hover,
-    &:focus {
+    &:active {
         box-shadow: $ms-depth-shadow-8;
     }
 
-    &:active {
-        box-shadow: $ms-depth-shadow-4;
+    &:focus-visible {
+        outline: none;
+        border-color: $primary-color-6;
     }
 
     &:disabled {
@@ -47,11 +42,119 @@ button {
     }
 }
 
+.input-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+
+    span.placeholder {
+        position: absolute;
+        top: 0;
+        left: 0.25rem;
+        bottom: 0;
+        margin: auto;
+        user-select: none;
+        pointer-events: none;
+        opacity: 0.8;
+        height: 1.75rem;
+        font-size: 1.25rem;
+    }
+
+    input {
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 2rem;
+        font-size: 1.25rem;
+        color: $dark-grey;
+        border-radius: $action-radius;
+        border: 2px solid $dark-grey;
+        outline: none;
+
+        &:active,
+        &:focus,
+        &:focus-visible,
+        &:focus-within {
+            border-color: $primary-color !important;
+        }
+    }
+
+    button.clear {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: transparent;
+        font-size: 1rem;
+        margin: auto;
+        padding: 0.25rem;
+        height: 2rem;
+        width: 2rem;
+    }
+}
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: max-content;
+    height: max-content;
+    max-width: 90vw;
+    max-height: 70vh;
+    margin: auto;
+    overflow: hidden;
+    border-radius: $container-radius;
+    background-color: white;
+    box-shadow: $ms-depth-shadow-64;
+    padding: 1rem 2rem;
+    color: $dark-grey;
+    user-select: none;
+
+    h1 {
+        margin: 0;
+        margin-bottom: 1rem;
+    }
+
+    p {
+        font-size: 1.25rem;
+    }
+
+    .action-bar {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        button.primary {
+            background-color: $primary-color;
+            color: white;
+            margin-left: 0.5rem;
+        }
+    }
+}
+
+html {
+    box-sizing: border-box;
+}
+* {
+    box-sizing: inherit;
+}
+
 body {
     padding: 0;
     margin: 0;
-    font-family: 'Segoe UI';
+    font-family: "Segoe UI";
     overflow: hidden;
+    background-color: $dark-grey;
 }
 
 h1 {

@@ -1,9 +1,9 @@
-<div #container class="list-container" [class.expanded]="expanded">
+<div #container class="list-container" [class.expanded]="expanded" [@slideUpFadeInState]="'active'">
     <div class="header">
         <div class="grab-handle"></div>
         <span class="title">current item:</span>
         <h1>{{ currItem.name }}</h1>
-        <button class="bordered" (click)="expanded = !expanded">
+        <button (click)="expanded = !expanded">
             <i class="ms-Icon ms-Icon--ChevronUp" aria-hidden="true" *ngIf="!expanded"></i>
             <i class="ms-Icon ms-Icon--ChevronDown" aria-hidden="true" *ngIf="expanded"></i>
         </button>
