@@ -7,5 +7,7 @@ namespace H21.Wellness.Api.Request
         public Guid Id { get; set; }
 
         public uint CompleteCount { get; set; }
+
+        public uint CompletedTimeInSeconds { get; set; }
     }
 }

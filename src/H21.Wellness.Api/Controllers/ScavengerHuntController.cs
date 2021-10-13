@@ -34,6 +34,7 @@ namespace H21.Wellness.Api.Controllers
             this._logger = logger;
         }
 
+        // sean
         [HttpGet("game/random")]
         [ProducesResponseType(typeof(GetRandomScavengerHuntResponse), StatusCodes.Status200OK)]
         public Task<IActionResult> GetRandomScavengerHuntAsync()
@@ -61,6 +62,7 @@ namespace H21.Wellness.Api.Controllers
             return Task.FromResult<IActionResult>(result);
         }
 
+        // sean
         [HttpGet("game/{id}")]
         [ProducesResponseType(typeof(GetScavengerHuntResponse), StatusCodes.Status200OK)]
         public Task<IActionResult> GetScavengerHuntAsync([FromRoute] Guid id)
@@ -86,21 +88,7 @@ namespace H21.Wellness.Api.Controllers
             return Task.FromResult<IActionResult>(result);
         }
 
-        [HttpPost("score")]
-        [ProducesResponseType(typeof(PostScavengerHuntScoreResponse), StatusCodes.Status201Created)]
-        [ActionName(nameof(PostScavengerHuntScoreAsync))]
-        public Task<IActionResult> PostScavengerHuntScoreAsync([FromBody] PostScavengerHuntScoreRequest request)
-        {
-            var response = new PostScavengerHuntScoreResponse
-            {
-                Score = 99.99
-            };
-
-            var result = this.CreatedAtAction(nameof(PostScavengerHuntScoreAsync), response);
-
-            return Task.FromResult<IActionResult>(result);
-        }
-
+        // sean
         [HttpPost]
         [ProducesResponseType(typeof(PostScavengerHuntResponse), StatusCodes.Status201Created)]
         [ActionName(nameof(PostScavengerHuntAsync))]
@@ -118,6 +106,23 @@ namespace H21.Wellness.Api.Controllers
             return Task.FromResult<IActionResult>(result);
         }
 
+        // un
+        [HttpPost("score")]
+        [ProducesResponseType(typeof(PostScavengerHuntScoreResponse), StatusCodes.Status201Created)]
+        [ActionName(nameof(PostScavengerHuntScoreAsync))]
+        public Task<IActionResult> PostScavengerHuntScoreAsync([FromBody] PostScavengerHuntScoreRequest request)
+        {
+            var response = new PostScavengerHuntScoreResponse
+            {
+                Score = 99.99
+            };
+
+            var result = this.CreatedAtAction(nameof(PostScavengerHuntScoreAsync), response);
+
+            return Task.FromResult<IActionResult>(result);
+        }
+
+        // Anjana
         [HttpGet("image")]
         [ProducesResponseType(typeof(GetImagesResponse), StatusCodes.Status200OK)]
         public Task<IActionResult> GetImagesAsync()
@@ -140,6 +145,7 @@ namespace H21.Wellness.Api.Controllers
             return Task.FromResult<IActionResult>(result);
         }
 
+        // Anjana
         [HttpGet("image/{id}")]
         [ProducesResponseType(typeof(GetImageResponse), StatusCodes.Status200OK)]
         public Task<IActionResult> GetImageAsync([FromRoute] Guid id)
@@ -156,6 +162,7 @@ namespace H21.Wellness.Api.Controllers
             return Task.FromResult<IActionResult>(result);
         }
 
+        // steven
         [HttpPost("validate")]
         [ProducesResponseType(typeof(PostValidateImageResponse), StatusCodes.Status201Created)]
         [ActionName(nameof(PostValidateImageAsync))]
@@ -173,16 +180,6 @@ namespace H21.Wellness.Api.Controllers
             var result = this.CreatedAtAction(nameof(PostValidateImageAsync), response);
 
             return result;
-        }
-
-
-        [HttpGet]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public object GetCuratedList()
-        {
-            string curatedList = System.IO.File.ReadAllText(@"..\Response\curatedList.json");
-            
-            return JsonConvert.DeserializeObject(curatedList); ;
         }
     }
 }
