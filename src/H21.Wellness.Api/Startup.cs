@@ -1,5 +1,8 @@
+using H21.Wellness.Clients;
 using H21.Wellness.Extensions;
 using H21.Wellness.Persistence;
+using H21.Wellness.Services;
+using H21.Wellness.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +31,8 @@ namespace H21.Wellness.Api
             services.AddAzureStorageOptions();
             services.TryAddTransient<IScavengerHuntRepository, ScavengerHuntRepository>();
             services.AddSingleton<IAzureStorageClientFactory, AzureStorageClientFactory>();
+            services.AddSingleton<IComputerVisionClientFactory, ComputerVisionClientFactory>();
+            services.AddScoped<IImageValidatorService, ImageValidatorService>();
 
             services.AddComputerVisionOptions();
 

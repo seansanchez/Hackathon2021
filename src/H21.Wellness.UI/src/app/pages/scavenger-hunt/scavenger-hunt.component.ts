@@ -61,22 +61,6 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                     this.getGame();
                 }
             });
-
-        timer(10000).pipe(first()).subscribe(() => {
-            if (!this.cameraView.hasCameras) {
-                this.dialogService.displayConfirmationDialog('Copy console dump', 'Error instantiating cameras', 'Copy')
-                    .subscribe(res => {
-                        if (res) {
-                            navigator.clipboard.writeText((console as any).errors.join(" --- "))
-                            .then(() => {
-                                this.dialogService.displayConfirmationDialog('Successfully copied console dump. Paste that into a message to Steven.', 'Copied', 'Ok').subscribe();
-                            }).catch(() => {
-                                this.dialogService.displayConfirmationDialog('Failed to copy console dump. Steven is sad.', 'Copy Fail', 'Cry').subscribe();
-                            });
-                        }
-                    });
-            }
-        });
     }
 
     /** Destroy lifecycle hook. */
@@ -108,6 +92,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                     this._gameName = scavengerHunt.name;
                     this._gameCode = scavengerHunt.id;
                     this.items = scavengerHunt.items.map(i => <IPrey>{
+                        id: i.id,
                         name: i.name,
                         complete: false
                     });
