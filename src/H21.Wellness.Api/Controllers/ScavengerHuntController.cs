@@ -169,8 +169,10 @@ namespace H21.Wellness.Api.Controllers
         public async Task<IActionResult> PostValidateImageAsync([FromBody] PostValidateImageRequest request)
         {
             request.ThrowIfNull(nameof(request));
+            request.Id.ThrowIfNull($"{nameof(request)}.{nameof(request.Id)}");
+            request.ImageDataUri.ThrowIfNull($"{nameof(request)}.{nameof(request.ImageDataUri)}");
 
-            var isValid = await this._imageValidatorService.IsValid(request.Id, request.ImageDateUri).ConfigureAwait(false);
+            var isValid = await this._imageValidatorService.IsValid(request.Id, request.ImageDataUri).ConfigureAwait(false);
 
             var response = new PostValidateImageResponse
             {

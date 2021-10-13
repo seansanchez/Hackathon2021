@@ -6,6 +6,6 @@ namespace H21.Wellness.Api.Request
     {
         public Guid Id { get; set; }
 
-        public string ImageDateUri { get; set; }
+        public string ImageDataUri { get; set; }
     }
 }

@@ -1,5 +1,8 @@
+using H21.Wellness.Clients;
 using H21.Wellness.Extensions;
 using H21.Wellness.Persistence;
+using H21.Wellness.Services;
+using H21.Wellness.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +29,8 @@ namespace H21.Wellness.Api
             services.AddMemoryCache();
             services.AddAzureStorageOptions();
             services.AddSingleton<IAzureStorageClientFactory, AzureStorageClientFactory>();
+            services.AddSingleton<IComputerVisionClientFactory, ComputerVisionClientFactory>();
+            services.AddScoped<IImageValidatorService, ImageValidatorService>();
 
             services.AddComputerVisionOptions();
 
@@ -59,7 +64,7 @@ namespace H21.Wellness.Api
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "H21.Wellness v1"));
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseCors(CorsPolicyName);
 

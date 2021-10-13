@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   uiUrl: 'https://h21wellness-ppe-ui.azurewebsites.net',
-  apiUrl: 'http://localhost:5000'
+  apiUrl: 'https://localhost:5001'
 };
 
 /*

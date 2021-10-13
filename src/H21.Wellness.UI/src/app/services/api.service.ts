@@ -36,7 +36,7 @@ export class ApiService {
     public checkImageMatch(itemId: string, imageUri: string): Observable<IImageConfidence> {
         return this.http.post<any>(`${this._apiUrl}/api/scavenger-hunt/validate`, {
             id: itemId,
-            imageDateUri: imageUri
+            imageDataUri: imageUri
         });
     }
 }
