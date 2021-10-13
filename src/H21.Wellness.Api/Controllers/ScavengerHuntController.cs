@@ -6,6 +6,7 @@ using H21.Wellness.Api.Request;
 using H21.Wellness.Api.Response;
 using H21.Wellness.Extensions;
 using H21.Wellness.Models;
+using H21.Wellness.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,12 +19,17 @@ namespace H21.Wellness.Api.Controllers
     [Produces("application/json")]
     public class ScavengerHuntController : ControllerBase
     {
+        private readonly IScavengerHuntRepository _scavengerHuntRepository;
         private readonly ILogger<ScavengerHuntController> _logger;
 
-        public ScavengerHuntController(ILogger<ScavengerHuntController> logger)
+        public ScavengerHuntController(
+            IScavengerHuntRepository scavengerHuntRepository,
+            ILogger<ScavengerHuntController> logger)
         {
+            scavengerHuntRepository.ThrowIfNull(nameof(scavengerHuntRepository));
             logger.ThrowIfNull(nameof(logger));
 
+            _scavengerHuntRepository = scavengerHuntRepository;
             _logger = logger;
         }
 
@@ -118,8 +124,10 @@ namespace H21.Wellness.Api.Controllers
         // Anjana
         [HttpGet("image")]
         [ProducesResponseType(typeof(GetImagesResponse), StatusCodes.Status200OK)]
-        public Task<IActionResult> GetImagesAsync()
+        public async Task<IActionResult> GetImagesAsync()
         {
+            var images = await _scavengerHuntRepository.GetScavengerHuntItemsAsync();
+
             var response = new GetImagesResponse
             {
                 Images = new List<ScavengerHuntItemModel>()
@@ -135,7 +143,7 @@ namespace H21.Wellness.Api.Controllers
 
             var result = this.Ok(response);
 
-            return Task.FromResult<IActionResult>(result);
+            return result;
         }
 
         // Anjana
