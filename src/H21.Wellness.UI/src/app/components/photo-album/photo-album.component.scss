@@ -6,7 +6,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: white;
+    background-color: $dark-grey;
 
     .title {
         display: flex;
@@ -18,7 +18,7 @@
 
         span.name {
             font-size: 1.5rem;
-            color: $text-color;
+            color: white;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -26,8 +26,10 @@
 
         button.close {
             font-size: 1.25rem;
-            height: 1.25rem;
-            width: 1.25rem;
+            height: 2rem;
+            width: 2rem;
+            color: white;
+            background-color: transparent;
         }
     }
 
@@ -52,7 +54,7 @@
                 width: 20rem;
                 height: max-content;
                 max-width: 80%;
-                box-shadow: $ms-depth-shadow-16;
+                box-shadow: $ms-depth-shadow-4;
                 border-radius: $container-radius;
                 margin-top: 1rem;
                 overflow: hidden;
@@ -67,6 +69,7 @@
                     justify-content: space-between;
                     align-items: center;
                     padding: 1rem;
+                    background-color: white;
     
                     span.name {
                         font-weight: 600;
@@ -74,7 +77,7 @@
                         white-space: nowrap;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                        color: $text-color;
+                        color: $dark-grey;
                     }
     
                     button.save {

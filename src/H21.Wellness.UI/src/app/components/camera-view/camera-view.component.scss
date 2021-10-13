@@ -17,6 +17,7 @@
         height: 100%;
         width: 100%;
         object-fit: contain;
+        background-color: $dark-grey;
     }
 
     canvas {
@@ -56,7 +57,7 @@
             margin-left: 0.5rem;
             margin-right: 0.5rem;
             color: white;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: #25252583;
 
             &:disabled {
                 opacity: 1;

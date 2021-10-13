@@ -12,7 +12,7 @@ prey-list.disabled {
     font-size: 1.5rem;
     color: white;
     padding: 1rem;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: #25252583;
 }
 
 loading-indicator {
@@ -55,6 +55,7 @@ loading-indicator {
     max-width: 100%;
     border-radius: $container-radius;
     user-select: none;
+    box-shadow: $ms-depth-shadow-4;
 
     * {
         display: block;
@@ -96,7 +97,7 @@ loading-indicator {
         justify-content: space-around;
         align-items: center;
         padding-right: 0.25;
-        color: $text-color;
+        color: $dark-grey;
     }
 
     .final-score {
