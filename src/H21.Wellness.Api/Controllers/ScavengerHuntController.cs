@@ -14,6 +14,7 @@ namespace H21.Wellness.Api.Controllers
 {
     [ApiController]
     [Route("api/scavenger-hunt")]
+    [Produces("application/json")]
     public class ScavengerHuntController : ControllerBase
     {
         private readonly ILogger<ScavengerHuntController> _logger;
@@ -105,6 +106,61 @@ namespace H21.Wellness.Api.Controllers
             };
 
             var result = this.CreatedAtAction(nameof(PostScavengerHuntAsync), response);
+
+            return Task.FromResult<IActionResult>(result);
+        }
+
+        [HttpGet("image")]
+        [ProducesResponseType(typeof(GetImagesResponse), StatusCodes.Status200OK)]
+        public Task<IActionResult> GetImagesAsync()
+        {
+            var response = new GetImagesResponse
+            {
+                Images = new List<ScavengerHuntItemModel>()
+                {
+                    new ScavengerHuntItemModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Image",
+                        Description = "Descr"
+                    }
+                }
+            };
+
+            var result = this.Ok(response);
+
+            return Task.FromResult<IActionResult>(result);
+        }
+
+        [HttpGet("image/{id}")]
+        [ProducesResponseType(typeof(GetImageResponse), StatusCodes.Status200OK)]
+        public Task<IActionResult> GetImageAsync([FromRoute] Guid id)
+        {
+            var response = new GetImageResponse
+            {
+                Id = Guid.NewGuid(),
+                Name = "Image",
+                Description = "Descr"
+            };
+
+            var result = this.Ok(response);
+
+            return Task.FromResult<IActionResult>(result);
+        }
+
+        [HttpPost("validate")]
+        [ProducesResponseType(typeof(PostValidateImageResponse), StatusCodes.Status201Created)]
+        [ActionName(nameof(PostValidateImageAsync))]
+        public Task<IActionResult> PostValidateImageAsync([FromBody] PostValidateImageRequest request)
+        {
+            request.ThrowIfNull(nameof(request));
+
+            var response = new PostScavengerHuntResponse
+            {
+                Id = Guid.NewGuid()
+            };
+
+            var result = this.CreatedAtAction(nameof(PostValidateImageAsync), response);
 
             return Task.FromResult<IActionResult>(result);
         }
