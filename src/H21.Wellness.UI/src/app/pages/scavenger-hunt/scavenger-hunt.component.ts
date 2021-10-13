@@ -19,6 +19,7 @@ import { ApiService } from 'src/app/services/api.service';
 })
 export class ScavengerHuntComponent implements OnInit, OnDestroy {
     public items: IPrey[] = [];
+    public preyImageMap = new Map<IPrey, string>();
 
     private _gameInProgress = false;
     private _gameOverTime: dayjs.Dayjs = dayjs();
@@ -34,6 +35,8 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     private _gameCode!: string;
     private _gameName: string = '';
     private _gameLoading: boolean = true;
+    private _scoring: boolean = false;
+    private _viewPhotos = false;
 
     @ViewChild('cameraView', { read: CameraViewComponent }) private cameraView!: CameraViewComponent;
     @ViewChild('preyList', { read: PreyListComponent }) private preyList!: PreyListComponent;
@@ -125,6 +128,11 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
         return this._gameLoading;
     }
 
+    /** Whether the game is scoring or not. */
+    public get scoring(): boolean {
+        return this._scoring;
+    }
+
     /** Gets the time remaining in MM:SS timestamp for display. */
     public get timeRemaining(): string {
         return this.convertToTimestamp(this._secondsRemaining);
@@ -155,9 +163,34 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
         return this._sharing;
     }
 
+    /** Whether the cameras are ready or not. */
+    public get cameraReady(): boolean {
+        return this.cameraView ? !this.cameraView.isLoading : false;
+    }
+
     /** Whether the image is processing or not. */
     public get imageProcessing(): boolean {
         return this._processing;
+    }
+
+    /** Whether the device can share. */
+    public get canShare(): boolean {
+        return 'share' in navigator;
+    }
+
+    /** The sharing error. */
+    public get shareError(): string {
+        return this._shareError;
+    }
+
+    /** Whether or not there was an error sharing. */
+    public get errorSharing(): boolean {
+        return this._errorSharing;
+    }
+
+    /** Whether or not to view photos. */
+    public get viewPhotos(): boolean {
+        return this._viewPhotos;
     }
 
     /** Updates the selected item. */
@@ -168,21 +201,25 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     /** Process image capture and progress the game. */
     public imageCaptured(imageUri: string): void {
         this.updateImageProcessingStatus(true);
-        console.log(imageUri);
-        setTimeout(() => {
-            this.preyList.completeItem(this._currItem);
-            this.updateImageProcessingStatus(false);
-        }, 200);
+        this.apiService.checkImageMatch(this._currItem.id, imageUri).subscribe(res => {
+            if (res && res.pass) {
+                this.preyImageMap.set(this._currItem, imageUri);
+                this.preyList.completeItem(this._currItem);
+                this.updateImageProcessingStatus(false);
+            }
+        });
     }
 
     /** Process game over. */
     public gameOver(): void {
         this._ngDestroy.next();
+        this._gameInProgress = false;
 
-        this.apiService.getScore(this.numItemsComplete).subscribe(res => {
+        this._scoring = true;
+        this.apiService.getScore(this._gameCode, this.numItemsComplete).subscribe(res => {
             if (res) {
-                this._gameInProgress = false;
                 this._gameComplete = true;
+                this._scoring = false;
 
                 this._finalScore = res.score;
             }
@@ -217,19 +254,9 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
         }
     }
 
-    /** Whether the device can share. */
-    public get canShare(): boolean {
-        return 'share' in navigator;
-    }
-
-    /** The sharing error. */
-    public get shareError(): string {
-        return this._shareError;
-    }
-
-    /** Whether or not there was an error sharing. */
-    public get errorSharing(): boolean {
-        return this._errorSharing;
+    /** Views the photos from the previous game */
+    public viewPhotoAlbum(view: boolean): void {
+        this._viewPhotos = view;
     }
 
     private updateImageProcessingStatus(processing: boolean) {
