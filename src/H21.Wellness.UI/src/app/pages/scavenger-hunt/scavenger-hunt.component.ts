@@ -103,19 +103,30 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     public startGame(): void {
         this._ngDestroy.next();
 
-        this.cameraView.startCameraStream();
+        if (this.cameraView.hasCameras) {
+            this.cameraView.startCameraStream();
 
-        this._gameInProgress = true;
-        this._gameOverTime = dayjs().add(20, 'minutes');
-        timer(500, 1000).pipe(
-            takeUntil(this._ngDestroy)
-        ).subscribe(() => {
-            this._secondsRemaining = this._gameOverTime.diff(dayjs(), 'seconds');
+            this._gameInProgress = true;
+            this._gameOverTime = dayjs().add(20, 'minutes');
+            timer(500, 1000).pipe(
+                takeUntil(this._ngDestroy)
+            ).subscribe(() => {
+                this._secondsRemaining = this._gameOverTime.diff(dayjs(), 'seconds');
 
-            if (this._secondsRemaining <= 0) {
-                this.gameOver();
-            }
-        });
+                if (this._secondsRemaining <= 0) {
+                    this.gameOver();
+                }
+            });
+        } else {
+            this.dialogService.displayConfirmationDialog('Sorry, we aren\'t detecting any cameras for your device... Try refreshing your browser', 'Uh oh', 'Refresh', 'Go Home')
+                .subscribe(res => {
+                    if (res) {
+                        window.location.replace(`${window.location.href}?game=${this._gameCode}`);
+                    } else {
+                        this.router.navigate(['/']);
+                    }
+                });
+        }
     }
 
     /** Gets the name of the scavenger hunt. */
