@@ -133,7 +133,7 @@ namespace H21.Wellness.Api.Controllers
             return Task.FromResult<IActionResult>(result);
         }
 
-        // Anjana
+
         [HttpGet("item")]
         [ProducesResponseType(typeof(GetScavengerHuntItemsResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetImagesAsync(CancellationToken cancellationToken)
@@ -153,12 +153,23 @@ namespace H21.Wellness.Api.Controllers
             return result;
         }
 
-        // Anjana
+   
         [HttpGet("item/{id}")]
         [ProducesResponseType(typeof(GetScavengerHuntItemResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetImageAsync([FromRoute] Guid id)
+        public async Task<IActionResult> GetImageAsync([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var item =
+                     await _scavengerHuntRepository.GetScavengerHuntItemAsync(id, cancellationToken)
+                     .ConfigureAwait(false);
+
+            var response = new GetScavengerHuntItemResponse
+            {
+                Item = item.ToModel()
+            };
+
+            var result = this.Ok(response);
+
+            return result;
         }
 
         // steven
