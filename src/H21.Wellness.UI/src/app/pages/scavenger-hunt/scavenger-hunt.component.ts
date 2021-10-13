@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, of, Subject, timer } from 'rxjs';
-import { catchError, first, skip, takeUntil } from 'rxjs/operators';
+import { catchError, first, takeUntil } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
 import { IPrey } from 'src/app/models/IPrey';
@@ -49,13 +49,6 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
 
     /** Initialization lifecycle hook. */
     public ngOnInit(): void {
-        (console as any).stdError = console.error.bind(console);
-        (console as any).errors = [];
-        console.error = function () {
-            (console as any).errors.push(Array.from(arguments));
-            (console as any).stdError.apply(console, arguments);
-        };
-
         this.activatedRoute.queryParamMap
             .pipe(
                 takeUntil(this._ngDestroy)
