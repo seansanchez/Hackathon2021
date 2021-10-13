@@ -3,13 +3,13 @@
     "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "name": "Dog",
     "description": "Dog",
-    "synonyms": [ "puppy", "animal", "canine" ]
+    "synonyms": [ "puppy", "canine" ]
   },
   {
     "id": "c40068b8-3fe3-4877-b51d-6491e5f893cd",
     "name": "Bird",
     "description": "Bird",
-    "synonyms": [ "bird", "animal" ]
+    "synonyms": [ "bird" ]
   },
   {
     "id": "6daed7d0-ee79-4ab9-98cc-70f48bab899d",

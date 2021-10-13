@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using H21.Wellness.Api.Request;
 using H21.Wellness.Api.Response;
@@ -35,36 +37,38 @@ namespace H21.Wellness.Api.Controllers
             logger.ThrowIfNull(nameof(logger));
 
             this._imageValidatorService = imageValidatorService;
-            _scavengerHuntRepository = scavengerHuntRepository;
+            this._scavengerHuntRepository = scavengerHuntRepository;
             this._logger = logger;
         }
 
         // sean
         [HttpGet("game/random")]
         [ProducesResponseType(typeof(GetRandomScavengerHuntResponse), StatusCodes.Status200OK)]
-        public Task<IActionResult> GetRandomScavengerHuntAsync()
+        public async Task<IActionResult> GetRandomScavengerHuntAsync()
         {
             var id = Guid.NewGuid();
+
+            var allItems = await this._scavengerHuntRepository.GetScavengerHuntItemsAsync().ConfigureAwait(false);
 
             var response = new GetRandomScavengerHuntResponse
             {
                 Id = id,
                 Name = "Test Scavenger Hunt",
                 Description = "This is a stub scavenger hunt.",
-                Items = new List<ScavengerHuntItemModel>()
+                Items = allItems.OrderBy(x => Guid.NewGuid()).Take(10).Select(item =>
                 {
-                    new ScavengerHuntItemModel
+                    return new ScavengerHuntItemModel
                     {
-                        Id = Guid.NewGuid(),
-                        Name = "Test Item 1",
-                        Description = "Description 1"
-                    }
-                }
+                        Id = item.Id,
+                        Name = item.Name,
+                        Description = item.Description
+                    };
+                })
             };
 
             var result = this.Ok(response);
 
-            return Task.FromResult<IActionResult>(result);
+            return result;
         }
 
         // sean
@@ -173,13 +177,15 @@ namespace H21.Wellness.Api.Controllers
         [HttpPost("validate")]
         [ProducesResponseType(typeof(PostValidateImageResponse), StatusCodes.Status201Created)]
         [ActionName(nameof(PostValidateImageAsync))]
-        public async Task<IActionResult> PostValidateImageAsync([FromBody] PostValidateImageRequest request)
+        public async Task<IActionResult> PostValidateImageAsync(
+            [FromBody] PostValidateImageRequest request,
+            CancellationToken cancellationToken)
         {
             request.ThrowIfNull(nameof(request));
             request.Id.ThrowIfNull($"{nameof(request)}.{nameof(request.Id)}");
             request.ImageDataUri.ThrowIfNull($"{nameof(request)}.{nameof(request.ImageDataUri)}");
 
-            var isValid = await this._imageValidatorService.IsValid(request.Id, request.ImageDataUri).ConfigureAwait(false);
+            var isValid = await this._imageValidatorService.IsValid(request.Id, request.ImageDataUri, cancellationToken).ConfigureAwait(false);
 
             var response = new PostValidateImageResponse
             {

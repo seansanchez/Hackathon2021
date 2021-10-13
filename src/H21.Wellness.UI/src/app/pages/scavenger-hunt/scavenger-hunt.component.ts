@@ -92,6 +92,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                     this._gameName = scavengerHunt.name;
                     this._gameCode = scavengerHunt.id;
                     this.items = scavengerHunt.items.map(i => <IPrey>{
+                        id: i.id,
                         name: i.name,
                         complete: false
                     });
