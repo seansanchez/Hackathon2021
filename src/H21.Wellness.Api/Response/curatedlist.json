@@ -3,17 +3,20 @@
     {
       "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       "name": "Dog",
-      "description": "Dog"
+      "description": "Dog",
+      "Synonyms": [ "puppy", "animal", "canine" ] 
     },
     {
       "id": "c40068b8-3fe3-4877-b51d-6491e5f893cd",
       "name": "Bird",
-      "description": "Bird"
+      "description": "Bird",
+      "Synonyms": [ "bird", "animal"]
     },
     {
       "id": "6daed7d0-ee79-4ab9-98cc-70f48bab899d",
       "name": "Playground",
-      "description": "Play ground"
+      "description": "Play ground",
+      "Synonyms": [ "outdoor", " outdoor play equipment", "playground slide" ]
     },
     {
       "id": "d036b012-5bc7-40ba-a7d7-91446b4585cd",
