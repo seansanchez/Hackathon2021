@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using H21.Wellness.Api.Request;
 using H21.Wellness.Api.Response;
@@ -123,15 +124,18 @@ namespace H21.Wellness.Api.Controllers
         }
 
         // Anjana
-        [HttpGet("image")]
-        [ProducesResponseType(typeof(GetImagesResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetImagesAsync()
+        [HttpGet("item")]
+        [ProducesResponseType(typeof(GetScavengerHuntItemsResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetImagesAsync(CancellationToken cancellationToken)
         {
-            var items = await _scavengerHuntRepository.GetScavengerHuntItemsAsync();
+            var items =
+                await _scavengerHuntRepository
+                    .GetScavengerHuntItemsAsync(cancellationToken)
+                    .ConfigureAwait(false);
 
-            var response = new GetImagesResponse
+            var response = new GetScavengerHuntItemsResponse
             {
-                Images = items.ToModels()
+                Items = items.ToModels()
             };
 
             var result = this.Ok(response);
@@ -140,20 +144,22 @@ namespace H21.Wellness.Api.Controllers
         }
 
         // Anjana
-        [HttpGet("image/{id}")]
-        [ProducesResponseType(typeof(GetImageResponse), StatusCodes.Status200OK)]
-        public Task<IActionResult> GetImageAsync([FromRoute] Guid id)
+        [HttpGet("item/{id}")]
+        [ProducesResponseType(typeof(GetScavengerHuntItemResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetImageAsync([FromRoute] Guid id)
         {
-            var response = new GetImageResponse
+            var item = await _scavengerHuntRepository
+                .GetScavengerHuntItemAsync(id)
+                .ConfigureAwait(false);
+
+            var response = new GetScavengerHuntItemResponse
             {
-                Id = Guid.NewGuid(),
-                Name = "Image",
-                Description = "Descr"
+                Item = item.ToModel()
             };
 
             var result = this.Ok(response);
 
-            return Task.FromResult<IActionResult>(result);
+            return result;
         }
 
         // steven
