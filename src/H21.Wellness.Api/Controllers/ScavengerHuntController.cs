@@ -45,11 +45,12 @@ namespace H21.Wellness.Api.Controllers
         // sean
         [HttpGet("game/random")]
         [ProducesResponseType(typeof(GetRandomScavengerHuntResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRandomScavengerHuntAsync()
+        public async Task<IActionResult> GetRandomScavengerHuntAsync(CancellationToken cancellationToken)
         {
             var id = Guid.NewGuid();
 
-            var allItems = await this._scavengerHuntRepository.GetScavengerHuntItemsAsync().ConfigureAwait(false);
+            var allItems = 
+                await this._scavengerHuntRepository.GetScavengerHuntItemsAsync(cancellationToken).ConfigureAwait(false);
 
             var response = new GetRandomScavengerHuntResponse
             {
