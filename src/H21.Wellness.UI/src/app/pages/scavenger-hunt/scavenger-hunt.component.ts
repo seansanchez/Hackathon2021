@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, of, Subject, timer } from 'rxjs';
-import { catchError, skip, takeUntil } from 'rxjs/operators';
+import { catchError, first, skip, takeUntil } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
 import { IPrey } from 'src/app/models/IPrey';
@@ -49,6 +49,13 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
 
     /** Initialization lifecycle hook. */
     public ngOnInit(): void {
+        (console as any).stdError = console.error.bind(console);
+        (console as any).errors = [];
+        console.error = function () {
+            (console as any).errors.push(Array.from(arguments));
+            (console as any).stdError.apply(console, arguments);
+        };
+
         this.activatedRoute.queryParamMap
             .pipe(
                 takeUntil(this._ngDestroy)
@@ -61,6 +68,22 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                     this.getGame();
                 }
             });
+
+        timer(10000).pipe(first()).subscribe(() => {
+            if (!this.cameraView.hasCameras) {
+                this.dialogService.displayConfirmationDialog('Copy console dump', 'Error instantiating cameras', 'Copy')
+                    .subscribe(res => {
+                        if (res) {
+                            navigator.clipboard.writeText((console as any).errors.join(" --- "))
+                            .then(() => {
+                                this.dialogService.displayConfirmationDialog('Successfully copied console dump. Paste that into a message to Steven.', 'Copied', 'Ok').subscribe();
+                            }).catch(() => {
+                                this.dialogService.displayConfirmationDialog('Failed to copy console dump. Steven is sad.', 'Copy Fail', 'Cry').subscribe();
+                            });
+                        }
+                    });
+            }
+        });
     }
 
     /** Destroy lifecycle hook. */
