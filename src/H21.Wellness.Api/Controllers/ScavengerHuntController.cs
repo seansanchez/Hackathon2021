@@ -4,8 +4,10 @@ using System.Net;
 using System.Threading.Tasks;
 using H21.Wellness.Api.Request;
 using H21.Wellness.Api.Response;
+using H21.Wellness.Clients;
 using H21.Wellness.Extensions;
 using H21.Wellness.Models;
+using H21.Wellness.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,13 +20,18 @@ namespace H21.Wellness.Api.Controllers
     [Produces("application/json")]
     public class ScavengerHuntController : ControllerBase
     {
+        private readonly IImageValidatorService _imageValidatorService;
         private readonly ILogger<ScavengerHuntController> _logger;
 
-        public ScavengerHuntController(ILogger<ScavengerHuntController> logger)
+        public ScavengerHuntController(
+            IImageValidatorService imageValidatorService,
+            ILogger<ScavengerHuntController> logger)
         {
+            imageValidatorService.ThrowIfNull(nameof(logger));
             logger.ThrowIfNull(nameof(logger));
 
-            _logger = logger;
+            this._imageValidatorService = imageValidatorService;
+            this._logger = logger;
         }
 
         [HttpGet("game/random")]
@@ -152,18 +159,20 @@ namespace H21.Wellness.Api.Controllers
         [HttpPost("validate")]
         [ProducesResponseType(typeof(PostValidateImageResponse), StatusCodes.Status201Created)]
         [ActionName(nameof(PostValidateImageAsync))]
-        public Task<IActionResult> PostValidateImageAsync([FromBody] PostValidateImageRequest request)
+        public async Task<IActionResult> PostValidateImageAsync([FromBody] PostValidateImageRequest request)
         {
             request.ThrowIfNull(nameof(request));
 
-            var response = new PostScavengerHuntResponse
+            var isValid = await this._imageValidatorService.IsValid(request.Id, request.ImageDateUri).ConfigureAwait(false);
+
+            var response = new PostValidateImageResponse
             {
-                Id = Guid.NewGuid()
+                IsMatch = isValid
             };
 
             var result = this.CreatedAtAction(nameof(PostValidateImageAsync), response);
 
-            return Task.FromResult<IActionResult>(result);
+            return result;
         }
 
 
