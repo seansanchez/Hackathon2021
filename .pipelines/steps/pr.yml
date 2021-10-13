@@ -7,6 +7,18 @@ steps:
   - checkout: self
     submodules: recursive
 
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '12.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      cd '$(Build.SourcesDirectory)/src/H21.Wellness.UI'
+      npm install -g @angular/cli
+      npm install
+      ng build --prod
+    displayName: 'npm install and build'
+
   - task: UseDotNet@2
     displayName: 'Use .NET Core 5.0 (latest)'
     inputs:
