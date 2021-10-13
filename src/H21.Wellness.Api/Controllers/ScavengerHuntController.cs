@@ -148,18 +148,7 @@ namespace H21.Wellness.Api.Controllers
         [ProducesResponseType(typeof(GetScavengerHuntItemResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetImageAsync([FromRoute] Guid id)
         {
-            var item = await _scavengerHuntRepository
-                .GetScavengerHuntItemAsync(id)
-                .ConfigureAwait(false);
-
-            var response = new GetScavengerHuntItemResponse
-            {
-                Item = item.ToModel()
-            };
-
-            var result = this.Ok(response);
-
-            return result;
+            throw new NotImplementedException();
         }
 
         // steven
