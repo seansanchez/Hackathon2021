@@ -47,30 +47,31 @@
             position: relative;
             height: 100%;
             width: 100%;
-            display: flex;
-            justify-content: center;
 
             .photo {
+                display: block;
                 width: 20rem;
                 height: max-content;
                 max-width: 80%;
                 box-shadow: $ms-depth-shadow-4;
                 border-radius: $container-radius;
                 margin-top: 1rem;
+                margin-left: auto;
+                margin-right: auto;
                 overflow: hidden;
-    
+
                 img {
                     object-fit: contain;
                     width: 100%;
                 }
-    
+
                 .caption-bar {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
                     padding: 1rem;
                     background-color: white;
-    
+
                     span.name {
                         font-weight: 600;
                         user-select: none;
@@ -79,7 +80,7 @@
                         text-overflow: ellipsis;
                         color: $dark-grey;
                     }
-    
+
                     button.save {
                         color: $primary-color;
                     }
