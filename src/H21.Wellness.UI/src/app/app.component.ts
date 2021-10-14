@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { DialogService } from './services/dialog.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,16 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
 
-  constructor(private readonly router: Router) {}
+  constructor(
+    private dialogService: DialogService,
+    private readonly router: Router) {
+    this.router.events.subscribe(ev => {
+      if (ev instanceof NavigationEnd) {
+        this.dialogService.closeAllConfirmationDialogs();
+        this.dialogService.closeAllPlayDialogs();
+      }
+    });
+  }
 
   public goHome(): void {
     this.router.navigate(['']);
