@@ -1,4 +1,4 @@
-<camera-view #cameraView (gameStart)="startGame()" (imageCaptured)="imageCaptured($event)"
+<camera-view #cameraView (imageCaptured)="imageCaptured($event)"
     *ngIf="gameStarting && !gameComplete && !viewPhotos" [class.disabled]="imageProcessing"></camera-view>
 <prey-list #preyList [items]="items" (listComplete)="gameOver()" (itemSelected)="itemSelected($event)"
     *ngIf="gameInProgress && !gameComplete && !viewPhotos" [class.disabled]="imageProcessing"></prey-list>
