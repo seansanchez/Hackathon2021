@@ -71,10 +71,12 @@ export class CreateComponent extends CanDeactivateBase implements OnInit {
 
     public roundTime(): void {
         this.huntTime = Math.floor(this.huntTime);
+        this._formDirty = true;
     }
 
     public validateName(): void {
         this.huntName = this.huntName.replace(/[^a-zA-Z' ]/g, "");
+        this._formDirty = true;
     }
 
     public addStep(): void {
@@ -198,6 +200,7 @@ export class CreateComponent extends CanDeactivateBase implements OnInit {
                         text: `I just created a new Scavenger Hunt! Play it and see how quickly you can find everything!`,
                         url: `${environment.uiUrl}/scavenger-hunt?game=${gameCode}`
                     }).then(() => {
+                        this._formDirty = false;
                         this.router.navigate(['/scavenger-hunt'], { queryParams: { game: gameCode } });
                     }).catch(() => {
                         this.dialogService.displayConfirmationDialog('There was an issue sharing your game. Try again?', 'Uh oh', 'Try Again', 'Cancel', true)
@@ -205,11 +208,13 @@ export class CreateComponent extends CanDeactivateBase implements OnInit {
                                 if (res) {
                                     this.shareGameDialog(gameCode);
                                 } else {
+                                    this._formDirty = false;
                                     this.router.navigate(['/']);
                                 }
                             });
                     });
                 } else {
+                    this._formDirty = false;
                     this.router.navigate(['/scavenger-hunt'], { queryParams: { game: gameCode } });
                 }
             });
