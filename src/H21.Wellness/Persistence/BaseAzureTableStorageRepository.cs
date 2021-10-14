@@ -30,7 +30,7 @@ namespace H21.Wellness.Persistence
             CancellationToken cancellationToken = default)
             where T : TableEntity, new()
         {
-            tableName.ThrowIfNullOrWhitespace(nameof(tableName));
+            tableName.ThrowIfNullOrWhiteSpace(nameof(tableName));
             entity.ThrowIfNull(nameof(entity));
 
             var stopwatch = new Stopwatch();
@@ -56,7 +56,7 @@ namespace H21.Wellness.Persistence
             CancellationToken cancellationToken = default)
             where T : TableEntity, new()
         {
-            tableName.ThrowIfNullOrWhitespace(nameof(tableName));
+            tableName.ThrowIfNullOrWhiteSpace(nameof(tableName));
             entity.ThrowIfNull(nameof(entity));
 
             var stopwatch = new Stopwatch();
@@ -85,9 +85,9 @@ namespace H21.Wellness.Persistence
             CancellationToken cancellationToken = default)
             where T : TableEntity, new()
         {
-            tableName.ThrowIfNullOrWhitespace(nameof(tableName));
-            partitionKey.ThrowIfNullOrWhitespace(nameof(partitionKey));
-            rowKey.ThrowIfNullOrWhitespace(nameof(rowKey));
+            tableName.ThrowIfNullOrWhiteSpace(nameof(tableName));
+            partitionKey.ThrowIfNullOrWhiteSpace(nameof(partitionKey));
+            rowKey.ThrowIfNullOrWhiteSpace(nameof(rowKey));
 
             T entity;
 
@@ -118,8 +118,8 @@ namespace H21.Wellness.Persistence
             CancellationToken cancellationToken)
             where T : TableEntity, new()
         {
-            tableName.ThrowIfNullOrWhitespace(nameof(tableName));
-            filter.ThrowIfNullOrWhitespace(nameof(filter));
+            tableName.ThrowIfNullOrWhiteSpace(nameof(tableName));
+            filter.ThrowIfNullOrWhiteSpace(nameof(filter));
 
             var entities = new List<T>();
 

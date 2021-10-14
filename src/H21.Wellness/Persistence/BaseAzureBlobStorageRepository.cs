@@ -33,8 +33,8 @@ namespace H21.Wellness.Persistence
             Stream content,
             CancellationToken cancellationToken = default)
         {
-            blobContainerName.ThrowIfNullOrWhitespace(nameof(blobContainerName));
-            blobName.ThrowIfNullOrWhitespace(nameof(blobName));
+            blobContainerName.ThrowIfNullOrWhiteSpace(nameof(blobContainerName));
+            blobName.ThrowIfNullOrWhiteSpace(nameof(blobName));
             content.ThrowIfNull(nameof(content));
 
             BlobReference blobReference;
@@ -82,9 +82,9 @@ namespace H21.Wellness.Persistence
             Stream content,
             CancellationToken cancellationToken = default)
         {
-            blobContainerName.ThrowIfNullOrWhitespace(nameof(blobContainerName));
-            blobName.ThrowIfNullOrWhitespace(nameof(blobName));
-            etag.ThrowIfNullOrWhitespace(nameof(etag));
+            blobContainerName.ThrowIfNullOrWhiteSpace(nameof(blobContainerName));
+            blobName.ThrowIfNullOrWhiteSpace(nameof(blobName));
+            etag.ThrowIfNullOrWhiteSpace(nameof(etag));
             content.ThrowIfNull(nameof(content));
 
             BlobReference blobReference;
@@ -130,8 +130,8 @@ namespace H21.Wellness.Persistence
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            blobContainerName.ThrowIfNullOrWhitespace(nameof(blobContainerName));
-            blobName.ThrowIfNullOrWhitespace(nameof(blobName));
+            blobContainerName.ThrowIfNullOrWhiteSpace(nameof(blobContainerName));
+            blobName.ThrowIfNullOrWhiteSpace(nameof(blobName));
 
             BlobProperties blobProperties;
 
@@ -168,8 +168,8 @@ namespace H21.Wellness.Persistence
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            blobContainerName.ThrowIfNullOrWhitespace(nameof(blobContainerName));
-            blobName.ThrowIfNullOrWhitespace(nameof(blobName));
+            blobContainerName.ThrowIfNullOrWhiteSpace(nameof(blobContainerName));
+            blobName.ThrowIfNullOrWhiteSpace(nameof(blobName));
 
             BlobReference blobReference;
 
@@ -209,13 +209,46 @@ namespace H21.Wellness.Persistence
             return blobReference;
         }
 
+        public async Task<Stream> OpenReadAsync(
+            string blobContainerName,
+            string blobName,
+            CancellationToken cancellationToken = default)
+        {
+            blobContainerName.ThrowIfNullOrWhiteSpace(nameof(blobContainerName));
+            blobName.ThrowIfNullOrWhiteSpace(nameof(blobName));
+
+            Stream content;
+
+            var stopwatch = Stopwatch.StartNew();
+
+            try
+            {
+                var blobClient = await _azureStorageClientFactory.GetBlobClientAsync(blobContainerName, blobName, cancellationToken).ConfigureAwait(false);
+
+                content = await blobClient
+                    .OpenReadAsync(new BlobOpenReadOptions(false), cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (RequestFailedException rfe) when (rfe.ErrorCode == BlobErrorCode.BlobNotFound)
+            {
+                content = null;
+            }
+            finally
+            {
+                stopwatch.Stop();
+                _logger.LogInformation($"{nameof(this.OpenReadAsync)} completed after {stopwatch.ElapsedMilliseconds} milliseconds.");
+            }
+
+            return content;
+        }
+
         protected async Task<byte[]> DownloadBlobAsync(
             string blobContainerName,
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            blobContainerName.ThrowIfNullOrWhitespace(nameof(blobContainerName));
-            blobName.ThrowIfNullOrWhitespace(nameof(blobName));
+            blobContainerName.ThrowIfNullOrWhiteSpace(nameof(blobContainerName));
+            blobName.ThrowIfNullOrWhiteSpace(nameof(blobName));
 
             byte[] bytes;
 
@@ -255,8 +288,8 @@ namespace H21.Wellness.Persistence
             Stream content,
             CancellationToken cancellationToken)
         {
-            blobContainerName.ThrowIfNullOrWhitespace(nameof(blobContainerName));
-            blobName.ThrowIfNullOrWhitespace(nameof(blobName));
+            blobContainerName.ThrowIfNullOrWhiteSpace(nameof(blobContainerName));
+            blobName.ThrowIfNullOrWhiteSpace(nameof(blobName));
             options.ThrowIfNull(nameof(options));
             content.ThrowIfNull(nameof(content));
 
@@ -298,8 +331,8 @@ namespace H21.Wellness.Persistence
             string blobName)
         {
             exception.ThrowIfNull(nameof(exception));
-            blobContainerName.ThrowIfNullOrWhitespace(nameof(blobContainerName));
-            blobName.ThrowIfNullOrWhitespace(nameof(blobName));
+            blobContainerName.ThrowIfNullOrWhiteSpace(nameof(blobContainerName));
+            blobName.ThrowIfNullOrWhiteSpace(nameof(blobName));
 
             if (exception.ErrorCode == BlobErrorCode.BlobNotFound)
             {

@@ -14,28 +14,15 @@ namespace H21.Wellness.Clients
         {
             options.ThrowIfNull(nameof(options));
             options.Value.ThrowIfNull($"{nameof(options)}.{nameof(options.Value)}");
-            options.Value.ApiKey.ThrowIfNullOrWhitespace($"{nameof(options)}.{nameof(options.Value)}.{nameof(options.Value.ApiKey)}");
-            options.Value.Endpoint.ThrowIfNullOrWhitespace($"{nameof(options)}.{nameof(options.Value)}.{nameof(options.Value.Endpoint)}");
+            options.Value.ApiKey.ThrowIfNullOrWhiteSpace($"{nameof(options)}.{nameof(options.Value)}.{nameof(options.Value.ApiKey)}");
+            options.Value.Endpoint.ThrowIfNullOrWhiteSpace($"{nameof(options)}.{nameof(options.Value)}.{nameof(options.Value.Endpoint)}");
 
             _options = options;
         }
 
+        protected ApiKeyServiceClientCredentials Credentials => new ApiKeyServiceClientCredentials(_options.Value.ApiKey);
 
-        protected ApiKeyServiceClientCredentials Credentials
-        {
-            get
-            {
-                return new ApiKeyServiceClientCredentials(_options.Value.ApiKey);
-            }
-        }
-
-        protected string Endpoint
-        {
-            get
-            {
-                return _options.Value.Endpoint;
-            }
-        }
+        protected string Endpoint => _options.Value.Endpoint;
 
 
         /// <summary>
@@ -70,7 +57,8 @@ namespace H21.Wellness.Clients
             using (var client = new ComputerVisionClient(Credentials) { Endpoint = Endpoint })
             {
 
-                TagResult analysisResult = await client.TagImageInStreamAsync(imageStream);
+                var analysisResult = await client.TagImageInStreamAsync(imageStream);
+                
                 return analysisResult;
             }
         }

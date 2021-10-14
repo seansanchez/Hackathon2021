@@ -4,7 +4,7 @@ namespace H21.Wellness.Extensions
 {
     public static class StringExtensions
     {
-        public static void ThrowIfNullOrWhitespace(this string source, string name)
+        public static void ThrowIfNullOrWhiteSpace(this string source, string name)
         {
             if (string.IsNullOrWhiteSpace(source))
             {

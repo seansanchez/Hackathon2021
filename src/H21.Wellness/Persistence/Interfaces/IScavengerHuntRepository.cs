@@ -8,6 +8,14 @@ namespace H21.Wellness.Persistence
 {
     public interface IScavengerHuntRepository
     {
+        Task<BlobReference> CreateScavengerHuntAsync(
+            ScavengerHuntEntity entity,
+            CancellationToken cancellationToken = default);
+
+        Task<ScavengerHuntEntity> GetScavengerHuntAsync(
+            Guid id,
+            CancellationToken cancellationToken = default);
+
         Task<ScavengerHuntItemEntity> GetScavengerHuntItemAsync(
             Guid id,
             CancellationToken cancellationToken = default);
