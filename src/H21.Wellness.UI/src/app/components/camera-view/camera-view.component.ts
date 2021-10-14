@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Camera } from "camera-web-api";
 import { PopFadeInAnimation } from 'src/app/animations/popFadeIn.animation';
+import { ISnapshot } from 'src/app/models/ISnapshot';
 
 @Component({
     selector: 'camera-view',
@@ -10,7 +11,7 @@ import { PopFadeInAnimation } from 'src/app/animations/popFadeIn.animation';
 })
 export class CameraViewComponent implements OnInit, AfterViewInit {
 
-    @Output() public imageCaptured = new EventEmitter<string>();
+    @Output() public imageCaptured = new EventEmitter<ISnapshot>();
     public startedStreaming = false;
 
     private camera!: Camera;
@@ -96,8 +97,19 @@ export class CameraViewComponent implements OnInit, AfterViewInit {
             const captureContext = this.captureCanvas.getContext('2d');
             if (captureContext) {
                 captureContext.drawImage(this.videoPlayer, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
-                const screenshot = this.captureCanvas.toDataURL('image/png')
-                this.imageCaptured.emit(screenshot);
+                const fullSnapshot = this.captureCanvas.toDataURL('image/png');
+                if (this.captureCanvas.width >= 2160) {
+                    captureContext.scale(0.33, 0.33);
+                } else if (this.captureCanvas.width >= 1440) {
+                    captureContext.scale(0.5, 0.5);
+                } else if (this.captureCanvas.width >= 1080) {
+                    captureContext.scale(0.67, 0.67);
+                }
+                const scaledSnapshot = this.captureCanvas.toDataURL('image/jpeg');
+                this.imageCaptured.emit({
+                    imageUri: fullSnapshot,
+                    scaledImageUri: scaledSnapshot
+                });
             }
         }
     }
