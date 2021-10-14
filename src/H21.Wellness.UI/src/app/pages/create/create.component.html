@@ -22,10 +22,12 @@
         <input type="number" class="hunt-time" [(ngModel)]="huntTime" min="5" max="60" (change)="roundTime()" [disabled]="saving || sharing" />
         <span class="placeholder">Time:</span>
         <span class="suffix">minutes</span>
+        <span class="error" *ngIf="timeError">{{ timeError }}</span>
     </div>
     <div class="input-wrapper">
         <input class="hunt-name" [(ngModel)]="huntName" maxlength="40" (change)="validateName()" [disabled]="saving || sharing" />
         <span class="placeholder" *ngIf="!hasHuntName">Scavenger Hunt Name:</span>
+        <span class="error" *ngIf="nameError">{{ nameError }}</span>
     </div>
     <button class="save" (click)="save()" [disabled]="!canSave || saving || sharing">
         <span *ngIf="!saving && !sharing">Save Scavenger Hunt</span>

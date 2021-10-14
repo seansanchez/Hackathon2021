@@ -25,6 +25,9 @@ export class CreateComponent extends CanDeactivateBase implements OnInit {
         itemName: string;
     }[] = [];
 
+    public nameError!: string | null;
+    public timeError!: string | null;
+
     private _formDirty = false;
     private _allItems: IItem[] = []
     private _saving = false;
@@ -150,12 +153,39 @@ export class CreateComponent extends CanDeactivateBase implements OnInit {
     }
 
     public get huntNameValid(): boolean {
+        if (this.huntName.length === 0) {
+            this.nameError = 'Required';
+            return false;
+        }
+
+        if (this.huntName.length < 1 && this.huntName.length <= 40) {
+            this.nameError = 'Must be between 1 and 40 characters in length';
+            return false;
+        }
+
         const match = /^[a-zA-Z0-9 ]+$/.test(this.huntName);
-        return match && this.huntName.length > 0 && this.huntName.length <= 40;
+        if (!match) {
+            this.nameError = 'Cannot contain special characters';
+            return false;
+        } 
+
+        this.nameError = null;
+        return true;
     }
 
     public get huntTimeValid(): boolean {
-        return this.huntTime > 5 && this.huntTime <= 60;
+        if (this.huntTime === null) {
+            this.nameError = 'Required';
+            return false;
+        }
+
+        if (this.huntTime < 5 || this.huntTime > 60) {
+            this.timeError = 'Must be between 5 and 60 minutes'
+            return false;
+        }
+
+        this.timeError = null;
+        return true;
     }
 
     private shareGameDialog(gameCode: string) {
