@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Camera } from "camera-web-api";
 import { PopFadeInAnimation } from 'src/app/animations/popFadeIn.animation';
 
@@ -8,7 +8,7 @@ import { PopFadeInAnimation } from 'src/app/animations/popFadeIn.animation';
     styleUrls: ['./camera-view.component.scss'],
     animations: [PopFadeInAnimation]
 })
-export class CameraViewComponent implements OnInit {
+export class CameraViewComponent implements OnInit, AfterViewInit {
 
     @Output() public imageCaptured = new EventEmitter<string>();
     public startedStreaming = false;
@@ -24,6 +24,11 @@ export class CameraViewComponent implements OnInit {
         const videoBounds = this.videoPlayer.getBoundingClientRect();
         const ratio = videoBounds.height / videoBounds.width;
         this.camera = new Camera(720 * ratio, 720);
+    }
+
+    /** After view initialization lifecycle hook. */
+    public ngAfterViewInit(): void {
+        this.camera.initialize();
     }
 
     /** Whether the camera is loading or not. */

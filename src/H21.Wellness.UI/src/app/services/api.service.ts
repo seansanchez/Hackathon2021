@@ -25,10 +25,11 @@ export class ApiService {
     }
 
     /** Gets a calculated score from the API */
-    public getScore(gameCode: string, numCompleted: number): Observable<IScore> {
+    public getScore(gameCode: string, numCompleted: number, timeToComplete: number): Observable<IScore> {
         return this.http.post<IScore>(`${this._apiUrl}/api/scavenger-hunt/score`, <any>{
             id: gameCode,
-            completeCount: numCompleted
+            completeCount: numCompleted,
+            completedTimeInSeconds: timeToComplete
         });
     }
 

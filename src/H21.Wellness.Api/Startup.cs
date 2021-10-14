@@ -33,6 +33,7 @@ namespace H21.Wellness.Api
             services.AddSingleton<IAzureStorageClientFactory, AzureStorageClientFactory>();
             services.AddSingleton<IComputerVisionClientFactory, ComputerVisionClientFactory>();
             services.AddScoped<IImageValidatorService, ImageValidatorService>();
+            services.AddScoped<IScoringService, ScoringService>();
 
             services.AddComputerVisionOptions();
 

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using H21.Wellness.Api.Request;
 using H21.Wellness.Api.Response;
-using H21.Wellness.Clients;
 using H21.Wellness.Extensions;
 using H21.Wellness.Models;
 using H21.Wellness.Models.Extensions;
@@ -15,7 +13,6 @@ using H21.Wellness.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace H21.Wellness.Api.Controllers
 {
@@ -26,19 +23,23 @@ namespace H21.Wellness.Api.Controllers
     {
         private readonly IImageValidatorService _imageValidatorService;
         private readonly IScavengerHuntRepository _scavengerHuntRepository;
+        private readonly IScoringService _scoringService;
         private readonly ILogger<ScavengerHuntController> _logger;
 
         public ScavengerHuntController(
             IImageValidatorService imageValidatorService,
             IScavengerHuntRepository scavengerHuntRepository,
+            IScoringService scoringService,
             ILogger<ScavengerHuntController> logger)
         {
             imageValidatorService.ThrowIfNull(nameof(logger));
             scavengerHuntRepository.ThrowIfNull(nameof(scavengerHuntRepository));
+            scoringService.ThrowIfNull(nameof(scoringService));
             logger.ThrowIfNull(nameof(logger));
 
             this._imageValidatorService = imageValidatorService;
             this._scavengerHuntRepository = scavengerHuntRepository;
+            this._scoringService = scoringService;
             this._logger = logger;
         }
 
@@ -123,9 +124,14 @@ namespace H21.Wellness.Api.Controllers
         [ActionName(nameof(PostScavengerHuntScoreAsync))]
         public Task<IActionResult> PostScavengerHuntScoreAsync([FromBody] PostScavengerHuntScoreRequest request)
         {
+            var score = this._scoringService.GetScore(
+                request.Id, 
+                request.CompleteCount,
+                request.CompletedTimeInSeconds);
+
             var response = new PostScavengerHuntScoreResponse
             {
-                Score = 99.99
+                Score = score
             };
 
             var result = this.CreatedAtAction(nameof(PostScavengerHuntScoreAsync), response);

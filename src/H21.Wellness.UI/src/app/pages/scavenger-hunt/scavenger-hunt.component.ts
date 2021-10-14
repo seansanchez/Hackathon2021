@@ -21,6 +21,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     public items: IPrey[] = [];
     public preyImageMap = new Map<IPrey, string>();
 
+    private _gameStarting = false;
     private _gameInProgress = false;
     private _gameOverTime: dayjs.Dayjs = dayjs();
     private _secondsRemaining: number = 20 * 60;
@@ -34,6 +35,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     private _processing: boolean = false;
     private _gameCode!: string;
     private _gameName: string = '';
+    private _timeLimitMinutes!: number;
     private _gameLoading: boolean = true;
     private _scoring: boolean = false;
     private _viewPhotos = false;
@@ -49,6 +51,13 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
 
     /** Initialization lifecycle hook. */
     public ngOnInit(): void {
+        const gameInProgress = sessionStorage.getItem('GameInProgress');
+        if (gameInProgress && (!this._gameCode || this._gameCode !== gameInProgress)) {
+            sessionStorage.removeItem('GameInProgress');
+            this.router.navigate(['/']);
+            return;
+        }
+
         this.activatedRoute.queryParamMap
             .pipe(
                 takeUntil(this._ngDestroy)
@@ -77,6 +86,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     }
 
     public getGame(): void {
+        this._gameStarting = true;
         this._gameLoading = true;
         this.apiService.getScavengerHunt(this._gameCode)
             .pipe(
@@ -91,12 +101,14 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                 if (scavengerHunt) {
                     this._gameName = scavengerHunt.name;
                     this._gameCode = scavengerHunt.id;
+                    this._timeLimitMinutes = scavengerHunt.timeLimitInMinutes;
                     this.items = scavengerHunt.items.map(i => <IPrey>{
                         id: i.id,
                         name: i.name,
                         complete: false
                     });
                     this._gameLoading = false;
+                    sessionStorage.setItem('GameInProgress', this._gameCode);
                 }
             });
     }
@@ -108,7 +120,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
             this.cameraView.startCameraStream();
 
             this._gameInProgress = true;
-            this._gameOverTime = dayjs().add(20, 'minutes');
+            this._gameOverTime = dayjs().add(this._timeLimitMinutes, 'minutes');
             timer(500, 1000).pipe(
                 takeUntil(this._ngDestroy)
             ).subscribe(() => {
@@ -122,7 +134,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
             this.dialogService.displayConfirmationDialog('Sorry, we aren\'t detecting any cameras for your device... Try refreshing your browser', 'Uh oh', 'Refresh', 'Go Home')
                 .subscribe(res => {
                     if (res) {
-                        window.location.replace(`${window.location.href}?game=${this._gameCode}`);
+                        window.location.replace(environment.uiUrl);
                     } else {
                         this.router.navigate(['/']);
                     }
@@ -133,6 +145,11 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     /** Gets the name of the scavenger hunt. */
     public get gameName(): string {
         return this._gameName;
+    }
+
+    /** Whether the game is starting or not. */
+    public get gameStarting(): boolean {
+        return this._gameStarting;
     }
 
     /** Whether the game is loading or not. */
@@ -235,7 +252,8 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
         this._gameInProgress = false;
 
         this._scoring = true;
-        this.apiService.getScore(this._gameCode, this.numItemsComplete).subscribe(res => {
+        const timeToComplete = this._timeLimitMinutes - Math.floor(this._gameOverTime.diff(dayjs(), 'minutes'));
+        this.apiService.getScore(this._gameCode, this.numItemsComplete, timeToComplete).subscribe(res => {
             if (res) {
                 this._gameComplete = true;
                 this._scoring = false;

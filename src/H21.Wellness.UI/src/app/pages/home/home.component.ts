@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogService } from 'src/app/services/dialog.service';
 
@@ -6,12 +6,17 @@ import { DialogService } from 'src/app/services/dialog.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
   constructor(
     private readonly dialogService: DialogService,
     private readonly router: Router
   ) { }
+
+  /** Initialization lifecycle hook */
+  public ngOnInit(): void {
+    sessionStorage.removeItem('GameInProgress');
+  }
 
   public start(): void {
     this.dialogService.displayPlayDialog().subscribe(gameCode => {
