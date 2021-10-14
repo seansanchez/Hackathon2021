@@ -21,13 +21,13 @@
     "id": "d036b012-5bc7-40ba-a7d7-91446b4585cd",
     "name": "Creek",
     "description": "Creek",
-    "synonyms": [ "water", "river", "lake", "bank", "nature", "trail", "stream" ]
+    "synonyms": [ "water", "river", "lake", "bank", "trail", "stream" ]
   },
   {
     "id": "4054e4ec-837c-42ef-9a38-fd895833862a",
     "name": "Sunset",
     "description": "Sunset",
-    "synonyms": [ "sky", "cloud", "sun", "sunrise", "beach", "orange", "setting" ]
+    "synonyms": [ "sun", "sunrise","setting" ]
   },
   {
     "id": "2680b7f6-d6a2-447d-a917-e02427897e65",
@@ -51,7 +51,7 @@
     "id": "33168f13-2c20-4ad4-8c06-98d2fef85aaa",
     "name": "Fire Hydrant",
     "description": "Fire Hydrant",
-    "synonyms": [ "fire", "hydrant", "curb", "city", "road"]
+    "synonyms": [ "fire", "hydrant"]
   },
   {
     "id": "881ceb63-f197-489f-a75d-a888362783b4",
@@ -63,7 +63,7 @@
     "id": "f29a1e48-072d-4c38-a4ec-bf4bd7e2d26c",
     "name": "Spider Web",
     "description": "Spider Web",
-    "synonyms": [ "spider", "web", "outdoor object"]
+    "synonyms": [ "spider", "web"]
   },
   {
     "id": "2fbce00b-4992-4d76-b107-e3b751a57a72",
