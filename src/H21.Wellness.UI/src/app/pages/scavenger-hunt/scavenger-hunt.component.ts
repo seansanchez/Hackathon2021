@@ -11,6 +11,7 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api.service';
+import { ISnapshot } from 'src/app/models/ISnapshot';
 
 @Component({
     templateUrl: './scavenger-hunt.component.html',
@@ -228,16 +229,16 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     }
 
     /** Process image capture and progress the game. */
-    public imageCaptured(imageUri: string): void {
+    public imageCaptured(snapshot: ISnapshot): void {
         this.updateImageProcessingStatus(true);
-        this.apiService.checkImageMatch(this._currItem.id, imageUri)
+        this.apiService.checkImageMatch(this._currItem.id, snapshot.scaledImageUri)
             .pipe(
                 timeout(10000),
                 catchError(() => {
                     this.dialogService.displayConfirmationDialog('There was an issue processing that picture.', 'Uh oh', 'Try Again', 'Cancel', true)
                         .subscribe(res => {
                             if (res) {
-                                this.imageCaptured(imageUri);
+                                this.imageCaptured(snapshot);
                             } else {
                                 this.updateImageProcessingStatus(false);
                             }
@@ -247,7 +248,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
             )
             .subscribe(res => {
                 if (res && res.isMatch) {
-                    this.preyImageMap.set(this._currItem, imageUri);
+                    this.preyImageMap.set(this._currItem, snapshot.imageUri);
                     this.preyList.completeItem(this._currItem);
                     this.updateImageProcessingStatus(false);
                 } else if (res && !res.isMatch) {
