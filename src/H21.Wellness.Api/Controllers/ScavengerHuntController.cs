@@ -135,12 +135,15 @@ namespace H21.Wellness.Api.Controllers
         [HttpPost("score")]
         [ProducesResponseType(typeof(PostScavengerHuntScoreResponse), StatusCodes.Status201Created)]
         [ActionName(nameof(PostScavengerHuntScoreAsync))]
-        public Task<IActionResult> PostScavengerHuntScoreAsync([FromBody] PostScavengerHuntScoreRequest request)
+        public async Task<IActionResult> PostScavengerHuntScoreAsync(
+            [FromBody] PostScavengerHuntScoreRequest request,
+            CancellationToken cancellationToken)
         {
-            var score = this._scoringService.GetScore(
+            var score = await this._scoringService.GetScore(
                 request.Id,
                 request.CompleteCount,
-                request.CompletedTimeInSeconds);
+                request.CompletedTimeInSeconds,
+                cancellationToken);
 
             var response = new PostScavengerHuntScoreResponse
             {
@@ -149,7 +152,7 @@ namespace H21.Wellness.Api.Controllers
 
             var result = this.CreatedAtAction(nameof(PostScavengerHuntScoreAsync), response);
 
-            return Task.FromResult<IActionResult>(result);
+            return result;
         }
 
         [HttpGet("item")]

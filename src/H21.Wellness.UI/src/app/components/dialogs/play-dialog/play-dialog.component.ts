@@ -14,7 +14,7 @@ export class PlayDialogComponent extends DialogBase {
 
     public gameCode: string = '';
 
-    private guidRegex = /[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}/i;
+    private guidRegex = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i;
 
     /** Whether or not a code has been typed in. */
     public get hasCode(): boolean {

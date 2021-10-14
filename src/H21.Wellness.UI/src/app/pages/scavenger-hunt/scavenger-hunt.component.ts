@@ -51,13 +51,6 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
 
     /** Initialization lifecycle hook. */
     public ngOnInit(): void {
-        const gameInProgress = sessionStorage.getItem('GameInProgress');
-        if (gameInProgress && (!this._gameCode || this._gameCode !== gameInProgress)) {
-            sessionStorage.removeItem('GameInProgress');
-            this.router.navigate(['/']);
-            return;
-        }
-
         this.activatedRoute.queryParamMap
             .pipe(
                 takeUntil(this._ngDestroy)
@@ -67,7 +60,14 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                     this._gameCode = gameCode;
                     this.router.navigate(['/scavenger-hunt'], { queryParams: {}, replaceUrl: true });
                 } else {
-                    this.getGame();
+                    const gameInProgress = sessionStorage.getItem('GameInProgress');
+                    if (gameInProgress && (!this._gameCode || this._gameCode !== gameInProgress)) {
+                        sessionStorage.removeItem('GameInProgress');
+                        this.router.navigate(['/']);
+                        return;
+                    } else {
+                        this.getGame();
+                    }
                 }
             });
     }
@@ -271,7 +271,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
         this.endGame(timeToComplete);
     }
 
-    private endGame(timeToComplete: number) {        
+    private endGame(timeToComplete: number) {
         this.apiService.getScore(this._gameCode, this.numItemsComplete, timeToComplete)
             .pipe(
                 timeout(10000),
