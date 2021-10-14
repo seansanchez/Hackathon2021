@@ -21,6 +21,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     public items: IPrey[] = [];
     public preyImageMap = new Map<IPrey, string>();
 
+    private _gameStarting = false;
     private _gameInProgress = false;
     private _gameOverTime: dayjs.Dayjs = dayjs();
     private _secondsRemaining: number = 20 * 60;
@@ -50,6 +51,13 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
 
     /** Initialization lifecycle hook. */
     public ngOnInit(): void {
+        const gameInProgress = sessionStorage.getItem('GameInProgress');
+        if (gameInProgress && (!this._gameCode || this._gameCode !== gameInProgress)) {
+            sessionStorage.removeItem('GameInProgress');
+            this.router.navigate(['/']);
+            return;
+        }
+
         this.activatedRoute.queryParamMap
             .pipe(
                 takeUntil(this._ngDestroy)
@@ -78,6 +86,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     }
 
     public getGame(): void {
+        this._gameStarting = true;
         this._gameLoading = true;
         this.apiService.getScavengerHunt(this._gameCode)
             .pipe(
@@ -99,6 +108,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
                         complete: false
                     });
                     this._gameLoading = false;
+                    sessionStorage.setItem('GameInProgress', this._gameCode);
                 }
             });
     }
@@ -124,7 +134,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
             this.dialogService.displayConfirmationDialog('Sorry, we aren\'t detecting any cameras for your device... Try refreshing your browser', 'Uh oh', 'Refresh', 'Go Home')
                 .subscribe(res => {
                     if (res) {
-                        window.location.replace(`${window.location.href}?game=${this._gameCode}`);
+                        window.location.replace(environment.uiUrl);
                     } else {
                         this.router.navigate(['/']);
                     }
@@ -135,6 +145,11 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     /** Gets the name of the scavenger hunt. */
     public get gameName(): string {
         return this._gameName;
+    }
+
+    /** Whether the game is starting or not. */
+    public get gameStarting(): boolean {
+        return this._gameStarting;
     }
 
     /** Whether the game is loading or not. */
