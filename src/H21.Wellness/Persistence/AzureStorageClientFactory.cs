@@ -23,7 +23,7 @@ namespace H21.Wellness.Persistence
             memoryCache.ThrowIfNull(nameof(memoryCache));
             options.ThrowIfNull(nameof(options));
             options.Value.ThrowIfNull($"{nameof(options)}.{nameof(options.Value)}");
-            options.Value.ConnectionString.ThrowIfNullOrWhitespace($"{nameof(options)}.{nameof(options.Value)}.{nameof(options.Value.ConnectionString)}");
+            options.Value.ConnectionString.ThrowIfNullOrWhiteSpace($"{nameof(options)}.{nameof(options.Value)}.{nameof(options.Value.ConnectionString)}");
 
             _memoryCache = memoryCache;
             _options = options;
@@ -35,7 +35,7 @@ namespace H21.Wellness.Persistence
             string tableName,
             CancellationToken cancellationToken = default)
         {
-            tableName.ThrowIfNullOrWhitespace(nameof(tableName));
+            tableName.ThrowIfNullOrWhiteSpace(nameof(tableName));
 
             var cacheKey = $"{nameof(BaseAzureTableStorageRepository)}:CloudTable:{tableName}";
 
@@ -75,7 +75,7 @@ namespace H21.Wellness.Persistence
             string blobContainerName,
             CancellationToken cancellationToken = default)
         {
-            blobContainerName.ThrowIfNullOrWhitespace(nameof(blobContainerName));
+            blobContainerName.ThrowIfNullOrWhiteSpace(nameof(blobContainerName));
 
             var cacheKey = $"{nameof(BaseAzureTableStorageRepository)}:BlobContainer:{blobContainerName}";
 
@@ -115,8 +115,8 @@ namespace H21.Wellness.Persistence
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            blobContainerName.ThrowIfNullOrWhitespace(nameof(blobContainerName));
-            blobName.ThrowIfNullOrWhitespace(nameof(blobName));
+            blobContainerName.ThrowIfNullOrWhiteSpace(nameof(blobContainerName));
+            blobName.ThrowIfNullOrWhiteSpace(nameof(blobName));
 
             var blobContainerClient =
                 await GetBlobContainerClientAsync(

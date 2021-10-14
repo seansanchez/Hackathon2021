@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using H21.Wellness.Api.Request;
@@ -23,109 +24,121 @@ namespace H21.Wellness.Api.Controllers
     {
         private readonly IImageValidatorService _imageValidatorService;
         private readonly IScavengerHuntRepository _scavengerHuntRepository;
+        private readonly IScavengerHuntService _scavengerHuntService;
         private readonly IScoringService _scoringService;
         private readonly ILogger<ScavengerHuntController> _logger;
 
         public ScavengerHuntController(
             IImageValidatorService imageValidatorService,
             IScavengerHuntRepository scavengerHuntRepository,
+            IScavengerHuntService scavengerHuntService,
             IScoringService scoringService,
             ILogger<ScavengerHuntController> logger)
         {
             imageValidatorService.ThrowIfNull(nameof(logger));
             scavengerHuntRepository.ThrowIfNull(nameof(scavengerHuntRepository));
+            scavengerHuntService.ThrowIfNull(nameof(scavengerHuntService));
             scoringService.ThrowIfNull(nameof(scoringService));
             logger.ThrowIfNull(nameof(logger));
 
             this._imageValidatorService = imageValidatorService;
             this._scavengerHuntRepository = scavengerHuntRepository;
+            this._scavengerHuntService = scavengerHuntService;
             this._scoringService = scoringService;
             this._logger = logger;
         }
 
-        // sean
         [HttpGet("game/random")]
         [ProducesResponseType(typeof(GetRandomScavengerHuntResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRandomScavengerHuntAsync(CancellationToken cancellationToken)
         {
-            var id = Guid.NewGuid();
+            IActionResult result;
 
-            var allItems = 
-                await this._scavengerHuntRepository.GetScavengerHuntItemsAsync(cancellationToken).ConfigureAwait(false);
+            var scavengerHunt = await _scavengerHuntService
+                .GetRandomScavengerHuntAsync(cancellationToken)
+                .ConfigureAwait(false);
 
-            var response = new GetRandomScavengerHuntResponse
+            if (scavengerHunt != null)
             {
-                Id = id,
-                Name = "Test Scavenger Hunt",
-                Description = "This is a stub scavenger hunt.",
-                Items = allItems.OrderBy(x => Guid.NewGuid()).Take(10).Select(item =>
+                var response = new GetScavengerHuntResponse
                 {
-                    return new ScavengerHuntItemModel
-                    {
-                        Id = item.Id,
-                        Name = item.Name,
-                        Description = item.Description
-                    };
-                })
-            };
+                    Id = scavengerHunt.Id,
+                    Name = scavengerHunt.Name,
+                    Description = scavengerHunt.Description,
+                    TimeLimitInMinutes = scavengerHunt.TimeLimitInMinutes,
+                    Items = scavengerHunt.Items
+                };
 
-            var result = this.Ok(response);
+                result = this.Ok(response);
+            }
+            else
+            {
+                result = this.NotFound();
+            }
 
             return result;
         }
 
-        // sean
         [HttpGet("game/{id}")]
         [ProducesResponseType(typeof(GetScavengerHuntResponse), StatusCodes.Status200OK)]
-        public Task<IActionResult> GetScavengerHuntAsync([FromRoute] Guid id)
+        public async Task<IActionResult> GetScavengerHuntAsync(
+            [FromRoute] Guid id,
+            CancellationToken cancellationToken)
         {
-            var response = new GetScavengerHuntResponse
+            IActionResult result;
+
+            var scavengerHunt = await _scavengerHuntService
+                .GetScavengerHuntAsync(id, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (scavengerHunt != null)
             {
-                Id = id,
-                Name = "Test Scavenger Hunt",
-                Description = "This is a stub scavenger hunt.",
-                Items = new List<ScavengerHuntItemModel>()
+                var response = new GetScavengerHuntResponse
                 {
-                    new ScavengerHuntItemModel
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Test Item 1",
-                        Description = "Description 1"
-                    }
-                }
-            };
+                    Id = scavengerHunt.Id,
+                    Name = scavengerHunt.Name,
+                    Description = scavengerHunt.Description,
+                    TimeLimitInMinutes = scavengerHunt.TimeLimitInMinutes,
+                    Items = scavengerHunt.Items
+                };
 
-            var result = this.Ok(response);
+                result = this.Ok(response);
+            }
+            else
+            {
+                result = this.NotFound();
+            }
 
-            return Task.FromResult<IActionResult>(result);
+            return result;
         }
 
-        // sean
         [HttpPost]
         [ProducesResponseType(typeof(PostScavengerHuntResponse), StatusCodes.Status201Created)]
         [ActionName(nameof(PostScavengerHuntAsync))]
-        public Task<IActionResult> PostScavengerHuntAsync([FromBody] PostScavengerHuntRequest request)
+        public async Task<IActionResult> PostScavengerHuntAsync([FromBody] PostScavengerHuntRequest request)
         {
             request.ThrowIfNull(nameof(request));
 
+            var id = await _scavengerHuntService
+                .CreateScavengerHuntAsync(request.Name, request.Description, request.TimeLimitInMinutes, request.ItemIds)
+                .ConfigureAwait(false);
+
+
             var response = new PostScavengerHuntResponse
             {
-                Id = Guid.NewGuid()
+                Id = id
             };
 
-            var result = this.CreatedAtAction(nameof(PostScavengerHuntAsync), response);
-
-            return Task.FromResult<IActionResult>(result);
+            return this.CreatedAtAction(nameof(PostScavengerHuntAsync), response);
         }
 
-        // un
         [HttpPost("score")]
         [ProducesResponseType(typeof(PostScavengerHuntScoreResponse), StatusCodes.Status201Created)]
         [ActionName(nameof(PostScavengerHuntScoreAsync))]
         public Task<IActionResult> PostScavengerHuntScoreAsync([FromBody] PostScavengerHuntScoreRequest request)
         {
             var score = this._scoringService.GetScore(
-                request.Id, 
+                request.Id,
                 request.CompleteCount,
                 request.CompletedTimeInSeconds);
 
@@ -139,10 +152,9 @@ namespace H21.Wellness.Api.Controllers
             return Task.FromResult<IActionResult>(result);
         }
 
-
         [HttpGet("item")]
         [ProducesResponseType(typeof(GetScavengerHuntItemsResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetImagesAsync(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetScavengerHuntItemsAsync(CancellationToken cancellationToken)
         {
             var items =
                 await _scavengerHuntRepository
@@ -159,10 +171,11 @@ namespace H21.Wellness.Api.Controllers
             return result;
         }
 
-   
         [HttpGet("item/{id}")]
         [ProducesResponseType(typeof(GetScavengerHuntItemResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetImageAsync([FromRoute] Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetScavengerHuntItemAsync(
+            [FromRoute] Guid id,
+            CancellationToken cancellationToken)
         {
             var item =
                      await _scavengerHuntRepository.GetScavengerHuntItemAsync(id, cancellationToken)
@@ -178,9 +191,8 @@ namespace H21.Wellness.Api.Controllers
             return result;
         }
 
-        // steven
         [HttpPost("validate")]
-        [ProducesResponseType(typeof(PostValidateImageResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(PostValidateItemResponse), StatusCodes.Status201Created)]
         [ActionName(nameof(PostValidateImageAsync))]
         public async Task<IActionResult> PostValidateImageAsync(
             [FromBody] PostValidateImageRequest request,
@@ -192,7 +204,7 @@ namespace H21.Wellness.Api.Controllers
 
             var isValid = await this._imageValidatorService.IsValid(request.Id, request.ImageDataUri, cancellationToken).ConfigureAwait(false);
 
-            var response = new PostValidateImageResponse
+            var response = new PostValidateItemResponse
             {
                 IsMatch = isValid
             };

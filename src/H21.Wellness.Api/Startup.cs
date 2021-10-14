@@ -29,6 +29,7 @@ namespace H21.Wellness.Api
         {
             services.AddMemoryCache();
             services.AddAzureStorageOptions();
+            services.TryAddTransient<IScavengerHuntService, ScavengerHuntService>();
             services.TryAddTransient<IScavengerHuntRepository, ScavengerHuntRepository>();
             services.AddSingleton<IAzureStorageClientFactory, AzureStorageClientFactory>();
             services.AddSingleton<IComputerVisionClientFactory, ComputerVisionClientFactory>();
