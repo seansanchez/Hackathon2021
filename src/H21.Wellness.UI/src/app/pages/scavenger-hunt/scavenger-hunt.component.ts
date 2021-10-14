@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, of, Subject, timer } from 'rxjs';
-import { catchError, first, takeUntil } from 'rxjs/operators';
+import { catchError, first, takeUntil, timeout } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
 import { IPrey } from 'src/app/models/IPrey';
@@ -79,7 +79,7 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
 
     public canDeactivate(): Observable<boolean> | boolean {
         if (this._gameInProgress) {
-            return this.dialogService.displayConfirmationDialog('Are you sure you want to leave this page? <br>All game progress will be lost.', 'Game in Progress');
+            return this.dialogService.displayConfirmationDialog('Are you sure you want to leave this page? <br>All game progress will be lost.', 'Game in Progress', 'Leave', 'Cancel', true);
         } else {
             return true;
         }
@@ -230,20 +230,35 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
     /** Process image capture and progress the game. */
     public imageCaptured(imageUri: string): void {
         this.updateImageProcessingStatus(true);
-        this.apiService.checkImageMatch(this._currItem.id, imageUri).subscribe(res => {
-            if (res && res.isMatch) {
-                this.preyImageMap.set(this._currItem, imageUri);
-                this.preyList.completeItem(this._currItem);
-                this.updateImageProcessingStatus(false);
-            } else {
-                this.dialogService.displayConfirmationDialog(
-                    `Hmmm... that picture doesn't seem to contain a "<i>${this._currItem.name}</i>". <br>Try taking another one!`,
-                    'No match', 'Ok')
-                    .subscribe(() => {
-                        this.updateImageProcessingStatus(false);
-                    });
-            }
-        });
+        this.apiService.checkImageMatch(this._currItem.id, imageUri)
+            .pipe(
+                timeout(10000),
+                catchError(() => {
+                    this.dialogService.displayConfirmationDialog('There was an issue processing that picture.', 'Uh oh', 'Try Again', 'Cancel', true)
+                        .subscribe(res => {
+                            if (res) {
+                                this.imageCaptured(imageUri);
+                            } else {
+                                this.updateImageProcessingStatus(false);
+                            }
+                        })
+                    return of(null);
+                })
+            )
+            .subscribe(res => {
+                if (res && res.isMatch) {
+                    this.preyImageMap.set(this._currItem, imageUri);
+                    this.preyList.completeItem(this._currItem);
+                    this.updateImageProcessingStatus(false);
+                } else if (res && !res.isMatch) {
+                    this.dialogService.displayConfirmationDialog(
+                        `Hmmm... that picture doesn't seem to contain a "<i>${this._currItem.name}</i>". <br>Try taking another one!`,
+                        'No match', 'Ok')
+                        .subscribe(() => {
+                            this.updateImageProcessingStatus(false);
+                        });
+                }
+            });
     }
 
     /** Process game over. */
@@ -253,14 +268,29 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
 
         this._scoring = true;
         const timeToComplete = this._timeLimitMinutes - Math.floor(this._gameOverTime.diff(dayjs(), 'minutes'));
-        this.apiService.getScore(this._gameCode, this.numItemsComplete, timeToComplete).subscribe(res => {
-            if (res) {
-                this._gameComplete = true;
-                this._scoring = false;
+        this.endGame(timeToComplete);
+    }
 
-                this._finalScore = res.score;
-            }
-        });
+    private endGame(timeToComplete: number) {        
+        this.apiService.getScore(this._gameCode, this.numItemsComplete, timeToComplete)
+            .pipe(
+                timeout(10000),
+                catchError(() => {
+                    this.dialogService.displayConfirmationDialog('There was an issue calculating your score.', 'Uh oh', 'Try Again', undefined, true)
+                        .subscribe(() => {
+                            this.endGame(timeToComplete);
+                        })
+                    return of(null);
+                })
+            )
+            .subscribe(res => {
+                if (res) {
+                    this._gameComplete = true;
+                    this._scoring = false;
+
+                    this._finalScore = res.score;
+                }
+            });
     }
 
     /** Shares the score through the browser share feature. */
