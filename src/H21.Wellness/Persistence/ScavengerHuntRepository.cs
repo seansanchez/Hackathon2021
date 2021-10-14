@@ -95,7 +95,10 @@ namespace H21.Wellness.Persistence
 
             var json = await File.ReadAllBytesAsync(filePath, cancellationToken).ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<IEnumerable<ScavengerHuntItemEntity>>(json);
+            return JsonSerializer.Deserialize<IEnumerable<ScavengerHuntItemEntity>>(json, new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            });
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using H21.Wellness.Api.Request;
@@ -8,6 +9,7 @@ using H21.Wellness.Extensions;
 using H21.Wellness.Models;
 using H21.Wellness.Models.Extensions;
 using H21.Wellness.Persistence;
+using H21.Wellness.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,50 +21,53 @@ namespace H21.Wellness.Api.Controllers
     [Produces("application/json")]
     public class ScavengerHuntController : ControllerBase
     {
+        private readonly IImageValidatorService _imageValidatorService;
         private readonly IScavengerHuntRepository _scavengerHuntRepository;
-        private readonly IScavengerHuntService _scavengerHuntService;
         private readonly ILogger<ScavengerHuntController> _logger;
 
         public ScavengerHuntController(
+            IImageValidatorService imageValidatorService,
             IScavengerHuntRepository scavengerHuntRepository,
-            IScavengerHuntService scavengerHuntService,
             ILogger<ScavengerHuntController> logger)
         {
+            imageValidatorService.ThrowIfNull(nameof(logger));
             scavengerHuntRepository.ThrowIfNull(nameof(scavengerHuntRepository));
+            scoringService.ThrowIfNull(nameof(scoringService));
             logger.ThrowIfNull(nameof(logger));
 
             _scavengerHuntRepository = scavengerHuntRepository;
-            _scavengerHuntService = scavengerHuntService;
             _logger = logger;
         }
 
         // sean
         [HttpGet("game/random")]
         [ProducesResponseType(typeof(GetRandomScavengerHuntResponse), StatusCodes.Status200OK)]
-        public Task<IActionResult> GetRandomScavengerHuntAsync(
-            CancellationToken cancellationToken)
+        public Task<IActionResult> GetRandomScavengerHuntAsync()
         {
             var id = Guid.NewGuid();
+
+            var allItems = 
+                await this._scavengerHuntRepository.GetScavengerHuntItemsAsync(cancellationToken).ConfigureAwait(false);
 
             var response = new GetRandomScavengerHuntResponse
             {
                 Id = id,
                 Name = "Test Scavenger Hunt",
                 Description = "This is a stub scavenger hunt.",
-                Items = new List<ScavengerHuntItemModel>()
+                Items = allItems.OrderBy(x => Guid.NewGuid()).Take(10).Select(item =>
                 {
-                    new ScavengerHuntItemModel
+                    return new ScavengerHuntItemModel
                     {
-                        Id = Guid.NewGuid(),
-                        Name = "Test Item 1",
-                        Description = "Description 1"
-                    }
-                }
+                        Id = item.Id,
+                        Name = item.Name,
+                        Description = item.Description
+                    };
+                })
             };
 
             var result = this.Ok(response);
 
-            return Task.FromResult<IActionResult>(result);
+            return result;
         }
 
         [HttpGet("game/{id}")]
@@ -127,9 +132,14 @@ namespace H21.Wellness.Api.Controllers
             [FromBody] PostScavengerHuntScoreRequest request,
             CancellationToken cancellationToken)
         {
+            var score = this._scoringService.GetScore(
+                request.Id, 
+                request.CompleteCount,
+                request.CompletedTimeInSeconds);
+
             var response = new PostScavengerHuntScoreResponse
             {
-                Score = 99.99
+                Score = score
             };
 
             var result = this.CreatedAtAction(nameof(PostScavengerHuntScoreAsync), response);
@@ -137,7 +147,7 @@ namespace H21.Wellness.Api.Controllers
             return Task.FromResult<IActionResult>(result);
         }
 
-        // Anjana
+
         [HttpGet("item")]
         [ProducesResponseType(typeof(GetScavengerHuntItemsResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetScavengerHuntItemsAsync(
@@ -158,34 +168,34 @@ namespace H21.Wellness.Api.Controllers
             return result;
         }
 
-        // Anjana
+   
         [HttpGet("item/{id}")]
         [ProducesResponseType(typeof(GetScavengerHuntItemResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetScavengerHuntItemAsync(
-            [FromRoute] Guid id,
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> GetImageAsync([FromRoute] Guid id)
         {
             throw new NotImplementedException();
         }
 
         // steven
         [HttpPost("validate")]
-        [ProducesResponseType(typeof(PostValidateItemResponse), StatusCodes.Status201Created)]
-        [ActionName(nameof(PostValidateItemAsync))]
-        public Task<IActionResult> PostValidateItemAsync(
-            [FromBody] PostValidateImageRequest request,
-            CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(PostValidateImageResponse), StatusCodes.Status201Created)]
+        [ActionName(nameof(PostValidateImageAsync))]
+        public Task<IActionResult> PostValidateImageAsync([FromBody] PostValidateImageRequest request)
         {
             request.ThrowIfNull(nameof(request));
+            request.Id.ThrowIfNull($"{nameof(request)}.{nameof(request.Id)}");
+            request.ImageDataUri.ThrowIfNull($"{nameof(request)}.{nameof(request.ImageDataUri)}");
 
-            var response = new PostScavengerHuntResponse
+            var isValid = await this._imageValidatorService.IsValid(request.Id, request.ImageDataUri, cancellationToken).ConfigureAwait(false);
+
+            var response = new PostValidateImageResponse
             {
-                Id = Guid.NewGuid()
+                IsMatch = isValid
             };
 
             var result = this.CreatedAtAction(nameof(PostValidateItemAsync), response);
 
-            return Task.FromResult<IActionResult>(result);
+            return result;
         }
     }
 }

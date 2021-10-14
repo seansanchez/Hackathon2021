@@ -15,5 +15,10 @@ namespace H21.Wellness
 
             public const string Environment = "ASPNETCORE_ENVIRONMENT";
         }
+
+        public static class ComputerVisionConstants
+        {
+            public const double MinConfidence = 0.7;
+        }
     }
 }

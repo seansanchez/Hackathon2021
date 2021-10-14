@@ -1,4 +1,4 @@
-@import 'src/styles.scss';
+@import "src/styles.scss";
 
 .list-container {
     position: absolute;
@@ -8,7 +8,6 @@
     border-top-left-radius: $container-radius;
     border-top-right-radius: $container-radius;
     background-color: $primary-color;
-    padding: 1rem;
     height: 5rem;
     transition: height $ms-motion-duration-1 $ms-motion-timing-standard;
     color: white;
@@ -17,72 +16,91 @@
         height: calc(100% - 5rem);
     }
 
-    .header {
-        display: flex;
-        height: 3rem;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
+    .list-wrapper {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        padding: 1rem;
 
-        .grab-handle {
-            position: absolute;
-            top: 8px;
-            left: 0;
-            right: 0;
-            margin: auto;
-            height: 2px;
-            width: 2rem;
-            background-color: $primary-color;
-            pointer-events: none;
-        }
-
-        .title {
-            position: absolute;
-            top: 0.5rem;
-        }
-
-        button {
-            background-color: transparent;
-            color: white;
-        }
-    }
-
-    .list {
-        .option {
-            position: relative;
+        .header {
             display: flex;
-            font-size: 1.25rem;
+            height: 3rem;
+            justify-content: space-between;
             align-items: center;
-            padding: 0.5rem 0;
-            user-select: none;
-            cursor: pointer;
+            margin-bottom: 1rem;
 
-            &.complete {
+            .grab-handle {
+                position: absolute;
+                top: 8px;
+                left: 0;
+                right: 0;
+                margin: auto;
+                height: 2px;
+                width: 2rem;
+                background-color: $primary-color;
                 pointer-events: none;
             }
 
-            * {
-                display: inline-flex;
+            .title {
+                position: absolute;
+                top: 0.5rem;
             }
 
-            .number {
-                flex-grow: 0;
-                margin-right: 0.5rem;
+            button {
+                background-color: transparent;
+                color: white;
             }
+        }
 
-            .name {
-                flex-grow: 1;
-            }
+        .scroll-container {
+            position: absolute;
+            top: 5rem;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+            scroll-behavior: smooth;
 
-            &.complete > .name {
-                text-decoration: line-through;
-            }
+            .list {
+                .option {
+                    position: relative;
+                    display: flex;
+                    font-size: 1.25rem;
+                    align-items: center;
+                    padding: 0.5rem 0;
+                    user-select: none;
+                    cursor: pointer;
 
-            i {
-                flex-grow: 0;
-                color: $primary-color;
-                margin-left: 0.5rem;
-                font-weight: 600;
+                    &.complete {
+                        pointer-events: none;
+                    }
+
+                    * {
+                        display: inline-flex;
+                    }
+
+                    .number {
+                        flex-grow: 0;
+                        margin-right: 0.5rem;
+                    }
+
+                    .name {
+                        flex-grow: 1;
+                    }
+
+                    &.complete > .name {
+                        text-decoration: line-through;
+                    }
+
+                    i {
+                        flex-grow: 0;
+                        color: $primary-color;
+                        margin-left: 0.5rem;
+                        font-weight: 600;
+                    }
+                }
             }
         }
     }
