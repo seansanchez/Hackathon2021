@@ -38,7 +38,11 @@ namespace H21.Wellness.Services
         public async Task<bool> IsValid(Guid imageId, string imageDataUri, CancellationToken cancellationToken = default)
         {
             var image = await this._scavengerHuntRepository.GetScavengerHuntItemAsync(imageId, cancellationToken).ConfigureAwait(false);
-            var possibleNames = image.Synonyms.Select(name => name.ToLower().Replace(" ", "").Trim()).ToList();
+            var possibleNames = 
+                image.Synonyms?
+                    .Select(name => name.ToLower().Replace(" ", "").Trim())
+                    .ToList() 
+                ?? new List<string>();
             possibleNames.Add(image.Name.ToLower().Replace(" ", "").Trim());
 
             var tagResult = await this.GetTagsFromImageUri(imageDataUri).ConfigureAwait(false);
