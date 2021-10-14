@@ -44,7 +44,7 @@ export class CreateComponent extends CanDeactivateBase implements OnInit {
     /** Initialization lifecycle hook. */
     public ngOnInit(): void {
         this.apiService.getAllItems().subscribe(itemsRespons => {
-            this._allItems = itemsRespons.items;
+            this._allItems = itemsRespons.items.sort((a, b) => a.name.localeCompare(b.name));
 
             this.addStep();
         });
