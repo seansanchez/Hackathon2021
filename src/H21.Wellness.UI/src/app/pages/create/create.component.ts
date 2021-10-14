@@ -205,7 +205,7 @@ export class CreateComponent extends CanDeactivateBase implements OnInit {
                                 if (res) {
                                     this.shareGameDialog(gameCode);
                                 } else {
-                                    this.router.navigate(['/scavenger-hunt'], { queryParams: { game: gameCode } });
+                                    this.router.navigate(['/']);
                                 }
                             });
                     });
