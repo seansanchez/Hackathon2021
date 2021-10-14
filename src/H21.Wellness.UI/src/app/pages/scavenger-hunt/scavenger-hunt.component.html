@@ -2,8 +2,13 @@
     *ngIf="gameStarting && !gameComplete && !viewPhotos" [class.disabled]="imageProcessing"></camera-view>
 <prey-list #preyList [items]="items" (listComplete)="gameOver()" (itemSelected)="itemSelected($event)"
     *ngIf="gameInProgress && !gameComplete && !viewPhotos" [class.disabled]="imageProcessing"></prey-list>
-<photo-album [gameName]="gameName" [preyImageMap]="preyImageMap" (close)="viewPhotoAlbum(false)" *ngIf="gameComplete && viewPhotos"></photo-album>
+<photo-album [gameName]="gameName" [preyImageMap]="preyImageMap" (close)="viewPhotoAlbum(false)"
+    *ngIf="gameComplete && viewPhotos"></photo-album>
 
+<div class="game-name-banner" *ngIf="cameraReady && !gameLoading && !gameInProgress && !scoring && !gameComplete"
+    [@popFadeInState]="'active'">
+    {{gameName}}
+</div>
 <button class="playButton" (click)="startGame();"
     *ngIf="cameraReady && !gameLoading && !gameInProgress && !scoring && !gameComplete"
     [@popFadeInState]="'active'">Start</button>
@@ -36,7 +41,7 @@
             </ng-container>
             <loading-indicator *ngIf="sharing"></loading-indicator>
         </button>
-    
+
         <button class="album" (click)="viewPhotoAlbum(true)">
             <i class="ms-Icon ms-Icon--PhotoCollection" aria-hidden="true"></i>
             view photos

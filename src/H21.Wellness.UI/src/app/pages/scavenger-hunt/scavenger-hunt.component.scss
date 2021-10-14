@@ -28,6 +28,21 @@ loading-indicator {
     color: $primary-color-5;
 }
 
+.game-name-banner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(50% + 5rem);
+    margin: auto;
+    width: 20rem;
+    color: white;
+    text-align: center;
+    white-space: normal;
+    user-select: none;
+    pointer-events: none;
+    font-size: 2rem;
+}
+
 .playButton {
     position: absolute;
     top: 0;
