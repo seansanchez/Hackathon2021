@@ -16,10 +16,13 @@ import { HomeComponent } from './pages/home/home.component';
 import { ScavengerHuntComponent } from './pages/scavenger-hunt/scavenger-hunt.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { CreateComponent } from './pages/create/create.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
+    CreateComponent,
     HomeComponent,
     ScavengerHuntComponent
   ],
@@ -30,6 +33,7 @@ import { environment } from '../environments/environment';
     AppRoutingModule,
     CameraViewModule,
     DialogModule,
+    FormsModule,
     HttpClientModule,
     LoadingIndicatorModule,
     OverlayModule,

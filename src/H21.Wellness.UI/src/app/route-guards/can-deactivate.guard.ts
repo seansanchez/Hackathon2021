@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Observable } from "rxjs";
-import { ScavengerHuntComponent } from "../pages/scavenger-hunt/scavenger-hunt.component";
+import { CanDeactivateBase } from "../pages/CanDeactivateBase";
 
 @Injectable({
     providedIn: 'root'
 })
-export class CanDeactivateScavengerHunt implements CanDeactivate<ScavengerHuntComponent> {
+export class CanDeactivateGuard implements CanDeactivate<CanDeactivateBase> {
   public canDeactivate(
-    component: ScavengerHuntComponent,
+    component: CanDeactivateBase,
     currentRoute: ActivatedRouteSnapshot,
     currentState: RouterStateSnapshot,
     nextState: RouterStateSnapshot

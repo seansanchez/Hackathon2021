@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http'
 import { environment } from "src/environments/environment";
-import { Observable, timer } from "rxjs";
+import { Observable } from "rxjs";
 import { IScavengerHunt } from "../models/IScavengerHunt";
 import { IScore } from "../models/IScore";
-import { first, map } from "rxjs/operators";
 import { IImageConfidence } from "../models/IImageConfidence";
+import { IItemsResponse } from "../models/IItemsResponse";
+import { INewScavengerHunt } from "../models/INewScavengerHunt";
 
 /**
  * A service to interface with the API
@@ -35,9 +36,19 @@ export class ApiService {
 
     /** Gets a calculated score from the API */
     public checkImageMatch(itemId: string, imageUri: string): Observable<IImageConfidence> {
-        return this.http.post<any>(`${this._apiUrl}/api/scavenger-hunt/validate`, {
+        return this.http.post<IImageConfidence>(`${this._apiUrl}/api/scavenger-hunt/validate`, {
             id: itemId,
             imageDataUri: imageUri
         });
+    }
+
+    /** Gets all items from API */
+    public getAllItems(): Observable<IItemsResponse> {
+        return this.http.get<IItemsResponse>(`${this._apiUrl}/api/scavenger-hunt/item`);
+    }
+
+    /** Gets all items from API */
+    public saveScavengerHunt(hunt: INewScavengerHunt): Observable<{ id: string }> {
+        return this.http.post<{ id: string }>(`${this._apiUrl}/api/scavenger-hunt`, hunt);
     }
 }
