@@ -1,0 +1,36 @@
+<div class="create-form">
+    <div class="hunt-items" [@listSlideFadeInState]="huntItems.length">
+        <div class="input-wrapper action" *ngFor="let huntItem of huntItems; let i = index; let last = last">
+            <span class="placeholder floating">Item {{huntItem.step}}</span>
+            <select [(ngModel)]="huntItem.itemId" (change)="selectHuntItem(i, $event)" [disabled]="saving || sharing">
+                <option [value]="huntItem.itemId">
+                    {{huntItem.itemName}}
+                </option>
+                <option [value]="item.id" *ngFor="let item of availableItems">
+                    {{item.name}}
+                </option>
+            </select>
+            <button class="remove" (click)="removeStep(i)" *ngIf="huntItems.length > 1" [disabled]="saving || sharing">
+                <i class="ms-Icon ms-Icon--Remove" aria-hidden="true"></i>
+            </button>
+            <button class="add" (click)="addStep()" *ngIf="last && !hasMaxSteps" [disabled]="saving || sharing">
+                <i class="ms-Icon ms-Icon--Add" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+    <div class="input-wrapper">
+        <input type="number" class="hunt-time" [(ngModel)]="huntTime" min="5" max="60" (change)="roundTime()" [disabled]="saving || sharing" />
+        <span class="placeholder">Time:</span>
+        <span class="suffix">minutes</span>
+        <span class="error" *ngIf="timeError">{{ timeError }}</span>
+    </div>
+    <div class="input-wrapper">
+        <input class="hunt-name" [(ngModel)]="huntName" maxlength="40" (change)="validateName()" [disabled]="saving || sharing" />
+        <span class="placeholder" *ngIf="!hasHuntName">Scavenger Hunt Name:</span>
+        <span class="error" *ngIf="nameError">{{ nameError }}</span>
+    </div>
+    <button class="save" (click)="save()" [disabled]="!canSave || saving || sharing">
+        <span *ngIf="!saving && !sharing">Save Scavenger Hunt</span>
+        <loading-indicator *ngIf="saving || sharing"></loading-indicator>
+    </button>
+</div>

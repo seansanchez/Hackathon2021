@@ -12,13 +12,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api.service';
 import { ISnapshot } from 'src/app/models/ISnapshot';
+import { CanDeactivateBase } from '../CanDeactivateBase';
 
 @Component({
     templateUrl: './scavenger-hunt.component.html',
     styleUrls: ['./scavenger-hunt.component.scss'],
     animations: [PopFadeInAnimation]
 })
-export class ScavengerHuntComponent implements OnInit, OnDestroy {
+export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit, OnDestroy {
     public items: IPrey[] = [];
     public preyImageMap = new Map<IPrey, string>();
 
@@ -48,7 +49,9 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
         private readonly activatedRoute: ActivatedRoute,
         private readonly apiService: ApiService,
         private readonly dialogService: DialogService,
-        private readonly router: Router) { }
+        private readonly router: Router) {
+        super();
+    }
 
     /** Initialization lifecycle hook. */
     public ngOnInit(): void {
@@ -78,9 +81,10 @@ export class ScavengerHuntComponent implements OnInit, OnDestroy {
         this._ngDestroy.next();
     }
 
+    /** Overriding base class */
     public canDeactivate(): Observable<boolean> | boolean {
         if (this._gameInProgress) {
-            return this.dialogService.displayConfirmationDialog('Are you sure you want to leave this page? <br>All game progress will be lost.', 'Game in Progress', 'Leave', 'Cancel', true);
+            return this.dialogService.displayConfirmationDialog('Are you sure you want to leave this page? <br>All game progress will be lost.', 'Game in Progress', 'Leave', 'Stay', true);
         } else {
             return true;
         }

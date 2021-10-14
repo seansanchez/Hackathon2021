@@ -1,0 +1,49 @@
+@import "src/styles.scss";
+
+.create-form {
+    position: relative;
+    height: 100%;
+    padding: 1rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+
+    .hunt-time {
+        text-align: right;
+        padding-right: 4rem;
+    }
+
+    .input-wrapper.action {
+        display: flex;
+        align-items: center;
+        
+        select {
+            flex-grow: 1;
+        }
+
+        button {
+            height: 1.75rem;
+            width: 1.75rem;
+            font-size: 1rem;
+            margin-left: 0.5rem;
+            background-color: $primary-color;
+            color: white;
+        }
+    }
+
+    button.save {
+        width: 100%;
+        background-color: $primary-color;
+        color: white;
+        margin-top: 2rem;
+
+        &:disabled {
+            opacity: 1;
+        }
+
+        loading-indicator {
+            font-size: 1.5rem;
+            height: 1.5rem;
+        }
+    }
+}
