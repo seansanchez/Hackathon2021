@@ -102,5 +102,13 @@ namespace H21.Wellness
 
             return model;
         }
+
+        public async Task<ScavengerHuntModel> GetRandomScavengerHuntAsync(CancellationToken cancellationToken = default)
+        {
+            var id = await _scavengerHuntRepository.GetRandomScavengerHuntIdAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return await GetScavengerHuntAsync(id, cancellationToken).ConfigureAwait(false);
+        }
     }
 }

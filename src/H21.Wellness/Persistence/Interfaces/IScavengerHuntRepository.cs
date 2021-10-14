@@ -16,6 +16,9 @@ namespace H21.Wellness.Persistence
             Guid id,
             CancellationToken cancellationToken = default);
 
+        Task<Guid> GetRandomScavengerHuntIdAsync(
+            CancellationToken cancellationToken = default);
+
         Task<ScavengerHuntItemEntity> GetScavengerHuntItemAsync(
             Guid id,
             CancellationToken cancellationToken = default);

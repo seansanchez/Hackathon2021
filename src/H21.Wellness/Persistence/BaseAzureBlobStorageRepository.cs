@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure;
@@ -209,7 +211,7 @@ namespace H21.Wellness.Persistence
             return blobReference;
         }
 
-        public async Task<Stream> OpenReadAsync(
+        protected async Task<Stream> OpenReadAsync(
             string blobContainerName,
             string blobName,
             CancellationToken cancellationToken = default)
@@ -279,6 +281,35 @@ namespace H21.Wellness.Persistence
             }
 
             return bytes;
+        }
+
+        protected async Task<BlobReference> GetRandomBlobReferenceAsync(
+            string blobContainerName,
+            CancellationToken cancellationToken = default)
+        {
+            blobContainerName.ThrowIfNullOrWhiteSpace(nameof(blobContainerName));
+
+            BlobReference blobReference = null;
+
+            var blobContainerClient = await _azureStorageClientFactory
+                .GetBlobContainerClientAsync(blobContainerName, cancellationToken)
+                .ConfigureAwait(false);
+
+            var random = new Random();
+            var pages = blobContainerClient.GetBlobs();
+
+            if (pages.Any())
+            {
+                var randomBlob = pages.ToArray()[random.Next(0, pages.Count() - 1)];
+
+                blobReference = new BlobReference
+                {
+                    BlobContainerName = blobContainerName,
+                    BlobName = randomBlob.Name
+                };
+            }
+
+            return blobReference;
         }
 
         private async Task<BlobReference> UploadBlobAsync(

@@ -18,5 +18,8 @@ namespace H21.Wellness
         Task<ScavengerHuntModel> GetScavengerHuntAsync(
             Guid id,
             CancellationToken cancellationToken = default);
+
+        Task<ScavengerHuntModel> GetRandomScavengerHuntAsync(
+            CancellationToken cancellationToken = default);
     }
 }

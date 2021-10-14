@@ -47,6 +47,8 @@ namespace H21.Wellness.Persistence
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
+            content.Position = 0;
+
             return await CreateBlobAsync(
                     blobContainerName: ScavengerHuntBlobContainerName,
                     blobName: entity.Id.ToString(),
@@ -79,6 +81,15 @@ namespace H21.Wellness.Persistence
             return entity;
         }
 
+        public async Task<Guid> GetRandomScavengerHuntIdAsync(
+            CancellationToken cancellationToken = default)
+        {
+            var blobReference = await GetRandomBlobReferenceAsync(ScavengerHuntBlobContainerName, cancellationToken)
+                .ConfigureAwait(false);
+
+            return Guid.Parse(blobReference.BlobName);
+        }
+
         public async Task<ScavengerHuntItemEntity> GetScavengerHuntItemAsync(
             Guid id,
             CancellationToken cancellationToken = default)
@@ -95,10 +106,7 @@ namespace H21.Wellness.Persistence
 
             var json = await File.ReadAllBytesAsync(filePath, cancellationToken).ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<IEnumerable<ScavengerHuntItemEntity>>(json, new JsonSerializerOptions()
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return JsonSerializer.Deserialize<IEnumerable<ScavengerHuntItemEntity>>(json, Constants.JsonSerializerOptions);
         }
     }
 }
