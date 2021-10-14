@@ -1,0 +1,31 @@
+<div class="backdrop" (click)="preventClose ? null : close(false)"></div>
+<div class="dialog" aria-label="Confirmation Dialog" *ngIf="shouldShowDialog()" [@popFadeInState]="'active'"
+    role="dialog" aria-modal="true" aria-haspopup="dialog" aria-hidden="false" aria-describedby="dialogBody"
+    cdkTrapFocus>
+    <h1>New Scavenger Hunt Item</h1>
+    <div class="camera-wrapper" [class.hidden]="imageTags.length > 0">
+        <camera-view #cameraView (imageCaptured)="imageCaptured($event)" *ngIf="renderCamera"
+            [class.disabled]="imageProcessing"></camera-view>
+    </div>
+    <div class="tag-selection" [class.hidden]="imageTags.length === 0">
+        <div class="input-wrapper">
+            <span class="placeholder floating">Select the best name:</span>
+            <select [(ngModel)]="tagName" [disabled]="adding">
+                <option [value]="imageTag.name" *ngFor="let imageTag of imageTags">
+                    {{imageTag.name}}
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="action-bar">
+        <button (click)="close()" aria-label="Cancel" *ngIf="imageTags.length === 0" [disabled]="adding">
+            Cancel
+        </button>
+        <button (click)="tryAgain()" aria-label="Try Again" *ngIf="imageTags.length > 0" [disabled]="adding">
+            Try Again
+        </button>
+        <button class="primary" (click)="choose" aria-label="Add" [disabled]="!tagName || error || adding">
+            Add
+        </button>
+    </div>
+</div>

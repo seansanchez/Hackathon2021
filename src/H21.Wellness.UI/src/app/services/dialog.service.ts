@@ -6,6 +6,8 @@ import { finalize } from "rxjs/operators";
 import { DialogBase } from "../components/dialogs/dialog-base";
 import { ConfirmationDialogComponent } from "../components/dialogs/confirmation-dialog/confirmation-dialog.component";
 import { PlayDialogComponent } from "../components/dialogs/play-dialog/play-dialog.component";
+import { ImageDetectDialogComponent } from "../components/dialogs/image-detect-dialog/image-detect-dialog.component";
+import { IItem } from "../models/IItem";
 
 /**
  * A service to display dialog instances
@@ -53,6 +55,21 @@ export class DialogService {
     return this.showDialog<ConfirmationDialogComponent>(overlayRef, dialogComponentRef);
   }
 
+  /** Displays an instance of the ImageDetectDialogComponent
+   * @param preventClose Optional: Prevents the user from closing the dialog via the close button or backdrop.
+   */
+   public displayImageDetectionDialog(preventClose?: boolean): Observable<IItem | boolean> {
+    this.closeAllImageDetectionDialogs();
+    const overlayRef = this.overlayRef;
+    const dialogComponentRef = overlayRef.attach(
+      new ComponentPortal(ImageDetectDialogComponent, null, this.injector)
+    );
+
+    dialogComponentRef.instance.preventClose = preventClose ?? false;
+
+    return this.showDialog<ImageDetectDialogComponent>(overlayRef, dialogComponentRef);
+  }
+
   /** Displays an instance of the PlayDialogComponent
    * @param preventClose Optional: Prevents the user from closing the dialog via the close button or backdrop.
    */
@@ -66,6 +83,15 @@ export class DialogService {
     dialogComponentRef.instance.preventClose = preventClose ?? false;
 
     return this.showDialog<PlayDialogComponent>(overlayRef, dialogComponentRef);
+  }
+
+  /** Force closes all open image detection dialogs. */
+  public closeAllImageDetectionDialogs() {
+    this.openDialogRefs.forEach(dialogComponentRef => {
+      if (dialogComponentRef.instance instanceof ImageDetectDialogComponent) {
+        dialogComponentRef.instance.close(null);
+      }
+    });
   }
 
   /** Force closes all open play dialogs. */

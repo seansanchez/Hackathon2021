@@ -3,6 +3,9 @@
         <div class="input-wrapper action" *ngFor="let huntItem of huntItems; let i = index; let last = last">
             <span class="placeholder floating">Item {{huntItem.step}}</span>
             <select [(ngModel)]="huntItem.itemId" (change)="selectHuntItem(i, $event)" [disabled]="saving || sharing">
+                <option [value]="-1">
+                    New Item
+                </option>
                 <option [value]="huntItem.itemId">
                     {{huntItem.itemName}}
                 </option>

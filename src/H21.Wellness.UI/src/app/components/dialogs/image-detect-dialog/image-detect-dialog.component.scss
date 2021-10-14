@@ -1,0 +1,35 @@
+@import "src/styles.scss";
+
+.camera-wrapper {
+    position: relative;
+    width: 100%;
+    height: 50vh;
+    margin-bottom: 1rem;
+
+    camera-view::ng-deep {
+        .video-container {
+            bottom: 0;
+        }
+    }
+
+    &.hidden {
+        display: none;
+    }
+}
+
+.tag-selection {
+
+    .input-wrapper {
+        .placeholder {
+            color: $dark-grey;
+        }
+    }
+
+    &.hidden {
+        display: none;
+    }
+
+    button.try-again {
+        font-size: 1rem;
+    }
+}

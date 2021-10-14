@@ -55,7 +55,7 @@ namespace H21.Wellness.Services
                 .Any(tag => possibleNames.Any(name => name.Contains(tag) || tag.Contains(name)));
         }
 
-        private async Task<TagResult> GetTagsFromImageUri(string imageDataUri)
+        public async Task<TagResult> GetTagsFromImageUri(string imageDataUri)
         {
             byte[] binData;
             try

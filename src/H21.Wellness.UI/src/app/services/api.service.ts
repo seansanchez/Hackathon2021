@@ -7,6 +7,7 @@ import { IScore } from "../models/IScore";
 import { IImageConfidence } from "../models/IImageConfidence";
 import { IItemsResponse } from "../models/IItemsResponse";
 import { INewScavengerHunt } from "../models/INewScavengerHunt";
+import { IImageTag } from "../models/IImageTag";
 
 /**
  * A service to interface with the API
@@ -38,6 +39,13 @@ export class ApiService {
     public checkImageMatch(itemId: string, imageUri: string): Observable<IImageConfidence> {
         return this.http.post<IImageConfidence>(`${this._apiUrl}/api/scavenger-hunt/validate`, {
             id: itemId,
+            imageDataUri: imageUri
+        });
+    }
+
+    /** Gets detected tags for an image */
+    public detectTags(imageUri: string): Observable<IImageTag[]> {
+        return this.http.post<IImageTag[]>(`${this._apiUrl}/api/scavenger-hunt/detect`, {
             imageDataUri: imageUri
         });
     }

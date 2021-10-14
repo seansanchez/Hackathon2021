@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using H21.Wellness.Api.Request;
 using H21.Wellness.Api.Response;
 using H21.Wellness.Extensions;
-using H21.Wellness.Models;
 using H21.Wellness.Models.Extensions;
 using H21.Wellness.Persistence;
 using H21.Wellness.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Extensions.Logging;
 
 namespace H21.Wellness.Api.Controllers
@@ -40,7 +39,7 @@ namespace H21.Wellness.Api.Controllers
             scavengerHuntService.ThrowIfNull(nameof(scavengerHuntService));
             scoringService.ThrowIfNull(nameof(scoringService));
             logger.ThrowIfNull(nameof(logger));
-
+            
             this._imageValidatorService = imageValidatorService;
             this._scavengerHuntRepository = scavengerHuntRepository;
             this._scavengerHuntService = scavengerHuntService;
@@ -190,6 +189,29 @@ namespace H21.Wellness.Api.Controllers
             };
 
             var result = this.Ok(response);
+
+            return result;
+        }
+
+        [HttpPost("detect")]
+        [ProducesResponseType(typeof(List<DetectedTagResponse>), StatusCodes.Status200OK)]
+        [ActionName(nameof(PostDetectImageRequest))]
+        public async Task<IActionResult> PostDetectImageAsync(
+            [FromBody] PostDetectImageRequest request)
+        {
+            request.ThrowIfNull(nameof(request));
+            request.ImageDataUri.ThrowIfNull($"{nameof(request)}.{nameof(request.ImageDataUri)}");
+
+            var tags = await this._imageValidatorService.GetTagsFromImageUri(request.ImageDataUri).ConfigureAwait(false);
+
+            var response = tags.Tags.Select(t => new DetectedTagResponse()
+            {
+                Name = t.Name,
+                Confidence = t.Confidence,
+                Hint = t.Hint
+            }).ToList();
+
+            var result = Ok(response);
 
             return result;
         }

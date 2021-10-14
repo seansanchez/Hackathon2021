@@ -62,6 +62,20 @@ export class CreateComponent extends CanDeactivateBase implements OnInit {
     public selectHuntItem(index: number, changeEvent: Event): void {
         const select = changeEvent.target as HTMLSelectElement;
 
+        if (select.value === "-1") {
+            this.dialogService.displayImageDetectionDialog(true).subscribe(item => {
+                if (item === false) {
+                    this.dialogService.displayConfirmationDialog('Error instantiating cameras. Refresh and try again.', 'Uh oh', 'Ok')
+                        .subscribe();
+                } else if (item && item !== true) {
+                    this.allItems.push(item);
+                    this.allItems.sort((a, b) => a.name.localeCompare(b.name));
+                    this.huntItems[index].itemId = item.id;
+                    this.huntItems[index].itemName = item.name;
+                }
+            });
+        }
+
         const matchingItem = this.allItems.find(i => i.id === select.value);
         if (matchingItem) {
             this.huntItems[index].itemId = matchingItem.id;
@@ -169,7 +183,7 @@ export class CreateComponent extends CanDeactivateBase implements OnInit {
         if (!match) {
             this.nameError = 'Cannot contain special characters';
             return false;
-        } 
+        }
 
         this.nameError = null;
         return true;
