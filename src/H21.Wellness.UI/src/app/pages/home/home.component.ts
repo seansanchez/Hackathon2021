@@ -27,4 +27,8 @@ export class HomeComponent implements OnInit {
       } 
     });
   }
+
+  public create(): void {
+    this.router.navigate(['/create']);
+  }
 }
