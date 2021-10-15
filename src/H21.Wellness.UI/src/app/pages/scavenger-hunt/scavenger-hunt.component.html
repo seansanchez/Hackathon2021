@@ -1,5 +1,5 @@
-<camera-view #cameraView (imageCaptured)="imageCaptured($event)"
-    *ngIf="gameStarting && !gameComplete && !viewPhotos" [class.disabled]="imageProcessing"></camera-view>
+<camera-view #cameraView (imageCaptured)="imageCaptured($event)" *ngIf="gameStarting && !gameComplete && !viewPhotos"
+    [class.disabled]="imageProcessing"></camera-view>
 <prey-list #preyList [items]="items" (listComplete)="gameOver()" (itemSelected)="itemSelected($event)"
     *ngIf="gameInProgress && !gameComplete && !viewPhotos" [class.disabled]="imageProcessing"></prey-list>
 <photo-album [gameName]="gameName" [preyImageMap]="preyImageMap" (close)="viewPhotoAlbum(false)"
@@ -10,8 +10,19 @@
     {{gameName}}
 </div>
 <button class="playButton" (click)="startGame();"
-    *ngIf="cameraReady && !gameLoading && !gameInProgress && !scoring && !gameComplete"
-    [@popFadeInState]="'active'">Start</button>
+    *ngIf="cameraReady && !gameLoading && !gameInProgress && !scoring && !gameComplete" [@popFadeInState]="'active'">
+    Start
+</button>
+<button class="shareButton" (click)="shareGame();"
+    *ngIf="cameraReady && !gameLoading && !gameInProgress && !scoring && !gameComplete" [@popFadeInState]="'active'">
+    <i class="ms-Icon ms-Icon--Share" aria-hidden="true"></i>
+    Share
+</button>
+<button class="refreshButton" (click)="getRandomGame();"
+    *ngIf="cameraReady && !gameLoading && !gameInProgress && !scoring && !gameComplete" [@popFadeInState]="'active'">
+    <i class="ms-Icon ms-Icon--Refresh" aria-hidden="true"></i>
+    Randomize
+</button>
 
 <loading-indicator *ngIf="cameraReady && (gameLoading || scoring)"></loading-indicator>
 

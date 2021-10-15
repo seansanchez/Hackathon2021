@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, of, Subject, timer } from 'rxjs';
-import { catchError, first, takeUntil, timeout } from 'rxjs/operators';
+import { catchError, takeUntil, timeout } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
 import { IPrey } from 'src/app/models/IPrey';
@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api.service';
 import { ISnapshot } from 'src/app/models/ISnapshot';
 import { CanDeactivateBase } from '../CanDeactivateBase';
+import { MessageTypeEnum } from 'src/app/components/message-chip/MessageTypeEnum';
 
 @Component({
     templateUrl: './scavenger-hunt.component.html',
@@ -35,7 +36,7 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
     private _errorSharing: boolean = false;
     private _currItem!: IPrey;
     private _processing: boolean = false;
-    private _gameCode!: string;
+    private _gameCode?: string;
     private _gameName: string = '';
     private _timeLimitMinutes!: number;
     private _gameLoading: boolean = true;
@@ -93,7 +94,7 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
     public getGame(): void {
         this._gameStarting = true;
         this._gameLoading = true;
-        this.apiService.getScavengerHunt(this._gameCode)
+        this.apiService.getScavengerHunt(this._gameCode!)
             .pipe(
                 catchError(() => {
                     this.dialogService.displayConfirmationDialog('We can\'t find that scavenger hunt game. Try a different code.', 'Oops!', 'Try Again').subscribe(() => {
@@ -136,6 +137,7 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
                 }
             });
         } else {
+            this.dialogService.displayMessageChip(`Camera errors`, MessageTypeEnum.error, true).subscribe();
             this.dialogService.displayConfirmationDialog('Sorry, we aren\'t detecting any cameras for your device... Try refreshing your browser', 'Uh oh', 'Refresh', 'Go Home')
                 .subscribe(res => {
                     if (res) {
@@ -145,6 +147,30 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
                     }
                 });
         }
+    }
+
+    public shareGame(): void {
+        this._sharing = true;
+        navigator.share(<ShareData>{
+            title: 'Breath of Fresh Where?',
+            text: `I'm about to play this scavenger hunt! You should check it out:`,
+            url: `${environment.uiUrl}/scavenger-hunt?game=${this._gameCode}`
+        })
+            .then(() => this._sharing = false)
+            .catch(() => {
+                this.dialogService.displayMessageChip('Error sharing game.', MessageTypeEnum.error, true).subscribe();
+                this._sharing = false;
+            });
+    }
+
+    public getRandomGame(): void {
+        this.dialogService.displayConfirmationDialog('Are you sure you want to get a new random game?', 'Randomize', 'Yes', 'Cancel')
+            .subscribe(res => {
+                if (res) {
+                    this._gameCode = undefined;
+                    this.getGame();
+                }
+            });
     }
 
     /** Gets the name of the scavenger hunt. */
@@ -239,6 +265,7 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
             .pipe(
                 timeout(10000),
                 catchError(() => {
+                    this.dialogService.displayMessageChip(`Sorry. Something broke.`, MessageTypeEnum.error, true).subscribe();
                     this.dialogService.displayConfirmationDialog('There was an issue processing that picture.', 'Uh oh', 'Try Again', 'Cancel', true)
                         .subscribe(res => {
                             if (res) {
@@ -252,6 +279,7 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
             )
             .subscribe(res => {
                 if (res && res.isMatch) {
+                    this.dialogService.displayMessageChip(`You found a ${this._currItem.name}!`, MessageTypeEnum.success, true).subscribe();
                     this.preyImageMap.set(this._currItem, snapshot.imageUri);
                     this.preyList.completeItem(this._currItem);
                     this.updateImageProcessingStatus(false);
@@ -277,10 +305,11 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
     }
 
     private endGame(timeToComplete: number) {
-        this.apiService.getScore(this._gameCode, this.numItemsComplete, timeToComplete)
+        this.apiService.getScore(this._gameCode!, this.numItemsComplete, timeToComplete)
             .pipe(
                 timeout(10000),
                 catchError(() => {
+                    this.dialogService.displayMessageChip(`Sorry. Something broke.`, MessageTypeEnum.error, true).subscribe();
                     this.dialogService.displayConfirmationDialog('There was an issue calculating your score.', 'Uh oh', 'Try Again', undefined, true)
                         .subscribe(() => {
                             this.endGame(timeToComplete);
@@ -294,6 +323,7 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
                     this._scoring = false;
 
                     this._finalScore = res.score;
+                    this.dialogService.displayMessageChip(`You finished! Great job!`, MessageTypeEnum.success, true).subscribe();
                 }
             });
     }
@@ -317,7 +347,7 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
                         .catch(() => {
                             this._errorSharing = true;
                             this._sharing = false;
-                        })
+                        });
                 })
                 .catch(() => {
                     this._errorSharing = true;

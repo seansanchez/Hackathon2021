@@ -1,0 +1,14 @@
+<div class="message-chip" [class.info]="messageType === infoType" [class.success]="messageType === successType"
+    [class.warning]="messageType === warningType" [class.error]="messageType === errorType"
+    [@popFadeInState]="'active'" (click)="close()">
+    <div class="message-container">
+        <div class="icon-container">
+            <loading-indicator></loading-indicator>
+            <i class="message-icon ms-Icon ms-Icon--Info" aria-hidden="true" *ngIf="messageType === infoType"></i>
+            <i class="message-icon ms-Icon ms-Icon--Emoji2" aria-hidden="true" *ngIf="messageType === successType"></i>
+            <i class="message-icon ms-Icon ms-Icon--EmojiNeutral" aria-hidden="true" *ngIf="messageType === warningType"></i>
+            <i class="message-icon ms-Icon ms-Icon--EmojiDisappointed" aria-hidden="true" *ngIf="messageType === errorType"></i>
+        </div>
+        {{ message }}
+    </div>
+</div>

@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { ListSlideFadeInAnimation } from "src/app/animations/listItemFadeIn.animation";
+import { MessageTypeEnum } from "src/app/components/message-chip/MessageTypeEnum";
 import { IItem } from "src/app/models/IItem";
 import { INewScavengerHunt } from "src/app/models/INewScavengerHunt";
 import { ApiService } from "src/app/services/api.service";
@@ -109,6 +110,7 @@ export class CreateComponent extends CanDeactivateBase implements OnInit {
         this.apiService.saveScavengerHunt(newScavengerHunt)
             .pipe(
                 catchError(() => {
+                    this.dialogService.displayMessageChip(`Sorry. Something broke.`, MessageTypeEnum.error, true).subscribe();
                     this.dialogService.displayConfirmationDialog('There was an issue saving your scavenger hunt. Would you like to try again?', 'Uh oh', 'Try Again', 'Cancel', true)
                         .subscribe(res => {
                             if (res) {
@@ -120,6 +122,7 @@ export class CreateComponent extends CanDeactivateBase implements OnInit {
             )
             .subscribe(res => {
                 if (res) {
+                    this.dialogService.displayMessageChip(`New game created!`, MessageTypeEnum.success, true).subscribe();
                     this.shareGameDialog(res.id);
                 }
             });

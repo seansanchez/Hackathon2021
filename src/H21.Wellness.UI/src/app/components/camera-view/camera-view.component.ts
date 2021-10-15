@@ -5,7 +5,7 @@ import { ISnapshot } from 'src/app/models/ISnapshot';
 
 @Component({
     selector: 'camera-view',
-    templateUrl: './camera-view-component.html',
+    templateUrl: './camera-view.component.html',
     styleUrls: ['./camera-view.component.scss'],
     animations: [PopFadeInAnimation]
 })

@@ -6,6 +6,8 @@ import { finalize } from "rxjs/operators";
 import { DialogBase } from "../components/dialogs/dialog-base";
 import { ConfirmationDialogComponent } from "../components/dialogs/confirmation-dialog/confirmation-dialog.component";
 import { PlayDialogComponent } from "../components/dialogs/play-dialog/play-dialog.component";
+import { MessageChipComponent } from "../components/message-chip/message-chip.component";
+import { MessageTypeEnum } from "../components/message-chip/MessageTypeEnum";
 
 /**
  * A service to display dialog instances
@@ -68,6 +70,25 @@ export class DialogService {
     return this.showDialog<PlayDialogComponent>(overlayRef, dialogComponentRef);
   }
 
+  /** Displays an instance of the Message Chip
+   * @param message Required: The message to display.
+   * @param messageType Required: The message type (Informational, Warning, Error).
+   * @param autoDismiss Optional: If the message should dismiss automatically after a couple seconds.
+   */
+  public displayMessageChip(message: string, messageType: MessageTypeEnum, autoDismiss?: boolean): Observable<boolean> {
+    this.dismissAllMessageChips();
+    const overlayRef = this.overlayRef;
+    const messageChipRef = overlayRef.attach(
+      new ComponentPortal(MessageChipComponent, null, this.injector)
+    );
+
+    messageChipRef.instance.message = message;
+    messageChipRef.instance.messageType = messageType;
+    messageChipRef.instance.autoDismiss = autoDismiss;
+
+    return this.showDialog<MessageChipComponent>(overlayRef, messageChipRef);
+  }
+
   /** Force closes all open play dialogs. */
   public closeAllPlayDialogs() {
     this.openDialogRefs.forEach(dialogComponentRef => {
@@ -81,6 +102,15 @@ export class DialogService {
   public closeAllConfirmationDialogs() {
     this.openDialogRefs.forEach(dialogComponentRef => {
       if (dialogComponentRef.instance instanceof ConfirmationDialogComponent) {
+        dialogComponentRef.instance.close(null);
+      }
+    });
+  }
+
+  /** Force closes all open confirmation dialogs. */
+  public dismissAllMessageChips() {
+    this.openDialogRefs.forEach(dialogComponentRef => {
+      if (dialogComponentRef.instance instanceof MessageChipComponent) {
         dialogComponentRef.instance.close(null);
       }
     });
