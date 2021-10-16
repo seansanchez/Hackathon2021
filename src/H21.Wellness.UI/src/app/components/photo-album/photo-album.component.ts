@@ -3,6 +3,8 @@ import { ListSlideFadeInAnimation } from "src/app/animations/listItemFadeIn.anim
 import { SlideUpFadeInAnimation } from "src/app/animations/slideUpFadeIn.animation";
 import { IPrey } from "src/app/models/IPrey";
 import { IPreyPhoto } from "src/app/models/IPreyPhoto";
+import { DialogService } from "src/app/services/dialog.service";
+import { MessageTypeEnum } from "../message-chip/MessageTypeEnum";
 
 @Component({
     selector: 'photo-album',
@@ -17,6 +19,8 @@ export class PhotoAlbumComponent implements OnChanges {
     @Output() public close = new EventEmitter();
 
     private _preyPhotos: IPreyPhoto[] = [];
+
+    constructor(private readonly dialogService: DialogService) {}
 
     /** Changes lifecycle hook */
     public ngOnChanges(): void {
@@ -42,6 +46,7 @@ export class PhotoAlbumComponent implements OnChanges {
         document.body.appendChild(saveLink);
         saveLink.click();
         document.body.removeChild(saveLink);
+        this.dialogService.displayMessageChip(`Image saved. How cute!`, MessageTypeEnum.success, true).subscribe();
     }
 
     /** Closes the album */

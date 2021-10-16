@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SwUpdate } from '@angular/service-worker';
 import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
@@ -11,15 +10,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private readonly dialogService: DialogService,
-    private readonly router: Router,
-    private readonly swUpdate: SwUpdate
+    private readonly router: Router
   ) {
-    this.swUpdate.available.subscribe(() => {
-      this.dialogService.displayConfirmationDialog('Refresh to get the lastest updates.', 'New things are here!', 'Refresh')
-        .subscribe(() => {
-          window.location.reload();
-        });
-    });
   }
 
   /** Initialization lifecycle hook */

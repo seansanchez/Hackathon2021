@@ -14,7 +14,7 @@ export class DialogBase implements OnDestroy {
     /** Output event when dialog is closing. */
     @Output() public onClose = new Subject<any>();
 
-    private _showDialog: boolean = false;
+    protected _showDialog: boolean = false;
     private _ngDestroy = new Subject();
 
     /** Destroy lifecycle hook. */
