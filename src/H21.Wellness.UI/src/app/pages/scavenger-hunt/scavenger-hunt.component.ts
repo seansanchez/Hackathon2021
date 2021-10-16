@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Observable, of, Subject, timer } from 'rxjs';
+import { Observable, of, Subject, Subscription, timer } from 'rxjs';
 import { catchError, takeUntil, timeout } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
@@ -280,6 +280,7 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
             .subscribe(res => {
                 apiDone.next();
                 if (res && res.isMatch) {
+                    this.dialogService.closeAllConfirmationDialogs();
                     this.dialogService.displayMessageChip(`You found a ${this._currItem.name}!`, MessageTypeEnum.success, true).subscribe();
                     this.preyImageMap.set(this._currItem, snapshot.imageUri);
                     this.preyList.completeItem(this._currItem);
@@ -293,18 +294,6 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
                         });
                 }
             });
-
-        timer(15000, 15000).pipe(
-            takeUntil(apiDone)
-        ).subscribe(() => {
-            this.dialogService.displayConfirmationDialog('This is taking longer than normal. Would you like to keep waiting or cancel and try again?', 'Still processing', 'Wait', 'Cancel', true)
-                .subscribe(res => {
-                    if (!res && apiSub && !apiSub.closed) {
-                        apiSub.unsubscribe();
-                        this.dialogService.displayMessageChip('Cancelled Image Capture', MessageTypeEnum.info, true);
-                    }
-                });
-        });
     }
 
     /** Process game over. */
@@ -372,6 +361,22 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
     /** Views the photos from the previous game */
     public viewPhotoAlbum(view: boolean): void {
         this._viewPhotos = view;
+    }
+
+    private timeoutImageProcessing(apiSub: Subscription, apiDone: Subject<any>) {
+        timer(15000).pipe(
+            takeUntil(apiDone)
+        ).subscribe(() => {
+            this.dialogService.displayConfirmationDialog('This is taking longer than normal. Would you like to keep waiting or cancel and try again?', 'Still processing', 'Wait', 'Cancel', true)
+                .subscribe(res => {
+                    if (!res && apiSub && !apiSub.closed) {
+                        apiSub.unsubscribe();
+                        this.dialogService.displayMessageChip('Cancelled Image Capture', MessageTypeEnum.info, true);
+                    } else {
+                        this.timeoutImageProcessing(apiSub, apiDone);
+                    }
+                });
+        });
     }
 
     private updateImageProcessingStatus(processing: boolean) {
