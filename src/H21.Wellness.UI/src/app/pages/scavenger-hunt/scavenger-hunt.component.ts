@@ -261,9 +261,9 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
     /** Process image capture and progress the game. */
     public imageCaptured(snapshot: ISnapshot): void {
         this.updateImageProcessingStatus(true);
-        this.apiService.checkImageMatch(this._currItem.id, snapshot.scaledImageUri)
+        const apiDone = new Subject();
+        const apiSub = this.apiService.checkImageMatch(this._currItem.id, snapshot.scaledImageUri)
             .pipe(
-                timeout(10000),
                 catchError(() => {
                     this.dialogService.displayMessageChip(`Sorry. Something broke.`, MessageTypeEnum.error, true).subscribe();
                     this.dialogService.displayConfirmationDialog('There was an issue processing that picture.', 'Uh oh', 'Try Again', 'Cancel', true)
@@ -278,6 +278,7 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
                 })
             )
             .subscribe(res => {
+                apiDone.next();
                 if (res && res.isMatch) {
                     this.dialogService.displayMessageChip(`You found a ${this._currItem.name}!`, MessageTypeEnum.success, true).subscribe();
                     this.preyImageMap.set(this._currItem, snapshot.imageUri);
@@ -292,6 +293,18 @@ export class ScavengerHuntComponent extends CanDeactivateBase implements OnInit,
                         });
                 }
             });
+
+        timer(15000, 15000).pipe(
+            takeUntil(apiDone)
+        ).subscribe(() => {
+            this.dialogService.displayConfirmationDialog('This is taking longer than normal. Would you like to keep waiting or cancel and try again?', 'Still processing', 'Wait', 'Cancel', true)
+                .subscribe(res => {
+                    if (!res && apiSub && !apiSub.closed) {
+                        apiSub.unsubscribe();
+                        this.dialogService.displayMessageChip('Cancelled Image Capture', MessageTypeEnum.info, true);
+                    }
+                });
+        });
     }
 
     /** Process game over. */
