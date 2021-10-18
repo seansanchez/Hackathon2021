@@ -26,8 +26,9 @@
 
 <loading-indicator *ngIf="cameraReady && (gameLoading || scoring)"></loading-indicator>
 
-<div class="time-stamp" *ngIf="gameInProgress">
-    {{ timeRemaining }}
+<div class="game-banner" *ngIf="gameInProgress">
+    <span class="name">{{ gameName }}</span>
+    <span class="time">{{ timeRemaining }}</span>
 </div>
 
 <div #scoreContainer class="game-over-container" *ngIf="gameComplete && !viewPhotos" [@popFadeInState]="'active'">

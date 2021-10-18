@@ -5,14 +5,27 @@ prey-list.disabled {
     pointer-events: none;
 }
 
-.time-stamp {
+.game-banner {
     position: absolute;
     top: 0;
     right: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 1.5rem;
     color: white;
-    padding: 1rem;
+    padding: 0.25rem 1rem;
     background-color: #25252583;
+    user-select: none;
+    pointer-events: none;
+
+    .name {
+        flex-grow: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 
 loading-indicator {

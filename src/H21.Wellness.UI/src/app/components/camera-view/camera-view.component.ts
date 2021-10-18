@@ -11,6 +11,7 @@ import { ISnapshot } from 'src/app/models/ISnapshot';
 })
 export class CameraViewComponent implements OnInit, AfterViewInit {
 
+    @Output() public cameraLoaded = new EventEmitter<{ success: boolean; err?: string }>();
     @Output() public imageCaptured = new EventEmitter<ISnapshot>();
     public startedStreaming = false;
 
@@ -29,7 +30,13 @@ export class CameraViewComponent implements OnInit, AfterViewInit {
 
     /** After view initialization lifecycle hook. */
     public ngAfterViewInit(): void {
-        this.camera.initialize();
+        this.camera.initialize()
+            .then(() => {
+                this.cameraLoaded.emit({ success: true });
+            })
+            .catch((errMessage: string) => {
+                this.cameraLoaded.emit({ success: false, err: errMessage });
+            });
     }
 
     /** Whether the camera is loading or not. */
