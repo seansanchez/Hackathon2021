@@ -8,6 +8,27 @@ steps:
   - checkout: self
     submodules: recursive
 
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '12.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      cd '$(Build.SourcesDirectory)/src/H21.Wellness.UI'
+      npm install -g @angular/cli
+      npm install
+      ng build --prod
+    displayName: 'npm install and build'
+
+  - task: ArchiveFiles@2
+    displayName: 'Archive files'
+    inputs:
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/src/H21.Wellness.UI/dist/H21WellnessUI/'
+      includeRootFolder: false
+      archiveType: zip
+      archiveFile: $(System.ArtifactsDirectory)/output/H21.Wellness.UI.zip
+      replaceExistingArchive: true
+
   - task: UseDotNet@2
     displayName: 'Use .NET Core 5.0 (latest)'
     inputs:
@@ -45,9 +66,9 @@ steps:
         includeRootFolder: false
         archiveFile: "$(System.ArtifactsDirectory)/output/${{ project }}.zip"
     
-    - publish: '$(System.ArtifactsDirectory)/output/${{ project }}.zip'
-      displayName: 'Publish - App'
-      artifact: 'drop'
+  - publish: '$(System.ArtifactsDirectory)/output/'
+    displayName: 'Publish - App'
+    artifact: 'drop'
 
   - task: PowerShell@2
     displayName: 'Buildout Artifacts'

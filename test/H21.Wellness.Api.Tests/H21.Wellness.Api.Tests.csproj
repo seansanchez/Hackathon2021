@@ -15,4 +15,9 @@
     <PackageReference Include="coverlet.collector" Version="3.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\H21.Wellness.Api\H21.Wellness.Api.csproj" />
+    <ProjectReference Include="..\H21.TestCore\H21.TestCore.csproj" />
+  </ItemGroup>
+
 </Project>

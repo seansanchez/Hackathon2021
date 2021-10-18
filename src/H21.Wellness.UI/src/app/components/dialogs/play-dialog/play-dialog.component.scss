@@ -1,0 +1,10 @@
+@import 'src/styles.scss';
+
+.input-wrapper {
+    width: 20rem;
+    max-width: 100%;
+
+    input {
+        padding-right: 2rem;
+    }
+}

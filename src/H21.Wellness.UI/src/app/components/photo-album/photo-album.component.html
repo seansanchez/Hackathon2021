@@ -1,0 +1,22 @@
+<div class="album-container" [@slideUpFadeInState]="'active'">
+    <div class="title">
+        <span class="name">{{gameName}} Photos</span>
+        <button class="close" aria-label="Close" (click)="closeAlbum()">
+            <i class="ms-Icon ms-Icon--ChromeClose" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="scroll-container">
+        <div class="photo-reel" [@listSlideFadeInState]="photos.length">
+            <div class="photo" *ngFor="let photo of photos">
+                <img [src]="photo.imageUri" />
+                <div class="caption-bar">
+                    <span class="name">{{photo.name}}</span>
+        
+                    <button class="save" (click)="savePhoto(photo)" aria-label="Save">
+                        <i class="ms-Icon ms-Icon--Save" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

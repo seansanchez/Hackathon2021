@@ -1,0 +1,36 @@
+@import 'src/styles.scss';
+
+.home-container {
+    padding: 1rem;
+
+    .text-box {
+        color: white;
+        font-size: 1.25rem;
+    }
+
+    .button-container {
+        display: flex;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        justify-content: space-around;
+        padding: 1rem;
+    
+        button.play {
+            flex-grow: 1;
+            margin-bottom: 1rem;
+            max-width: calc(min(20rem, 75%));
+            background-color: $primary-color-2;
+            color: white;
+        }
+
+        button.create {
+            background-color: $primary-color-2;
+            color: white;
+        }
+    }
+}

@@ -1,0 +1,210 @@
+@import "office-ui-fabric-core/dist/sass/References";
+
+@font-face {
+    font-family: LocalSegoe;
+    src: url(assets/fonts/segoeui.ttf) format("truetype");
+}
+
+$primary-color: #036666;
+$primary-color-2: #14746f;
+$primary-color-3: #248277;
+$primary-color-4: #358f80;
+$primary-color-5: #469d89;
+$primary-color-6: #99e2b4;
+
+$dark-grey: #252525;
+
+$container-radius: 8px;
+$action-radius: 4px;
+
+button {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: $action-radius;
+    height: 3rem;
+    background-color: white;
+    border: 2px solid transparent;
+    color: $dark-grey;
+    padding: 0 1rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    -webkit-tap-highlight-color: transparent;
+
+    &:active {
+        box-shadow: $ms-depth-shadow-8;
+    }
+
+    &:focus-visible {
+        outline: none;
+        border-color: $primary-color-6;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+.input-wrapper {
+    position: relative;
+    padding: 1.5rem 0;
+
+    span.placeholder {
+        position: absolute;
+        top: 0;
+        left: calc(0.5rem + 2px);
+        bottom: 0;
+        margin: auto;
+        user-select: none;
+        pointer-events: none;
+        opacity: 0.5;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 1.25rem;
+
+        &.floating {
+            top: 0;
+            bottom: unset;
+            color: white;
+            font-size: 1rem;
+            opacity: 1;
+        }
+    }
+
+    span.error {
+        color: red;
+        position: absolute;
+        bottom: 0;
+        font-size: 1rem;
+        user-select: none;
+        pointer-events: none;
+    }
+
+    span.suffix {
+        position: absolute;
+        top: 0.25rem;
+        bottom: 0;
+        right: 0.5rem;
+        margin: auto;
+        line-height: 1rem;
+        height: 1rem;
+        font-size: 0.75rem;
+        user-select: none;
+        pointer-events: none;
+    }
+
+    select,
+    input {
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 3rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        font-size: 1.25rem;
+        color: $dark-grey;
+        background-color: white;
+        border-radius: $action-radius;
+        border: 2px solid $dark-grey;
+        outline: none;
+        font-family: 'LocalSegoe';
+
+        &:active,
+        &:focus,
+        &:focus-visible,
+        &:focus-within {
+            border-color: $primary-color !important;
+        }
+    }
+
+    button.clear {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: transparent;
+        font-size: 1rem;
+        margin: auto;
+        padding: 0.25rem;
+        height: 2rem;
+        width: 2rem;
+    }
+}
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: max-content;
+    height: max-content;
+    max-width: 90vw;
+    max-height: 70vh;
+    margin: auto;
+    overflow: hidden;
+    border-radius: $container-radius;
+    background-color: white;
+    box-shadow: $ms-depth-shadow-64;
+    padding: 1rem 2rem;
+    color: $dark-grey;
+    user-select: none;
+
+    h1 {
+        margin: 0;
+        margin-bottom: 1rem;
+    }
+
+    p {
+        font-size: 1.25rem;
+    }
+
+    .action-bar {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        button.primary {
+            background-color: $primary-color;
+            color: white;
+            margin-left: 0.5rem;
+        }
+    }
+}
+
+html {
+    box-sizing: border-box;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: "LocalSegoe";
+    overflow: hidden;
+    background-color: $dark-grey;
+}
+
+* {
+    font-family: "LocalSegoe";
+    box-sizing: inherit;
+}
+
+h1 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+i {
+    font-family: "FabricMDL2Icons";
+}
