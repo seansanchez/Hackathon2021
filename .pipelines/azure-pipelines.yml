@@ -48,7 +48,7 @@ stages:
             steps:
               - template: 'steps/deploy.yml'
                 parameters:
-                  armDeploymentSubscription: 'VSE-150'
+                  armDeploymentSubscription: 'VSE-150 (MS Work)'
                   armDeploymentResourceGroup: 'h21wellness-ppe'
                   armDeploymentLocation: 'West US'
                   configurationName: 'ppe'
@@ -69,7 +69,7 @@ stages:
             steps:
               - template: 'steps/deploy.yml'
                 parameters:
-                  armDeploymentSubscription: 'VSE-150'
+                  armDeploymentSubscription: 'VSE-150 (MS Work)'
                   armDeploymentResourceGroup: 'h21wellness-prod'
                   armDeploymentLocation: 'West US'
                   configurationName: 'prod'
